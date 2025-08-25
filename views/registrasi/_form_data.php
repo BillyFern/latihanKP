@@ -30,14 +30,9 @@ $actionUrl = $dataform->isNewRecord
       ], [
         'itemOptions' => ['class' => 'form-check-input'], 
         'item' => function ($index, $label, $name, $checked, $value){
-            return '<div class="form-check">'
-                . Html::checkbox($name, $checked, [
-                    'value' => $value,
-                    'class' => 'form-check-input',
-                    'id' => $name . '_' . $index
-                ])
-                . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                . '</div>';
+          return '<label class="checkbox-radio-style">' .
+                Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+                ' ' . $label . '</label>';
         }])
       ->label('1. Cara masuk'); ?>
 
@@ -47,17 +42,20 @@ $actionUrl = $dataform->isNewRecord
           'Aloanamnesis'  => 'Aloanamnesis',
       ], ['itemOptions' => ['class' => 'form-check-input'], 
       'item' => function($index, $label, $name, $checked, $value){
-         return '<div class="form-check">'
-                . Html::checkbox($name, $checked, [
-                    'value' => $value,
-                    'class' => 'form-check-input',
-                    'id' => $name . '_' . $index
-                ])
-                . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                . '</div>';
+        return '<label class="checkbox-radio-style">' .
+               Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+               ' ' . $label . '</label>';
       }])
       ->label('2. Anamnesis'); ?>
 
+  <div class="row">
+    <div class="col-6">
+      <?= $form->field($dataform, 'dataFields[diperoleh]')->textInput()->label('Diperoleh'); ?>
+    </div>
+        <div class="col-6">
+      <?= $form->field($dataform, 'dataFields[hubungan]')->textInput()->label('Hubungan'); ?>
+    </div>
+  </div>
   <div class="row">
     <div class="col">
       <?= $form->field($dataform, 'dataFields[alergi]')->textInput()->label('Alergi'); ?>
@@ -81,14 +79,9 @@ $actionUrl = $dataform->isNewRecord
             'Berat' => 'Berat',
         ], ['itemOptions' => ['class' => 'form-check-input'], 
         'item' => function($index, $label, $name, $checked, $value){
-         return '<div class="form-check">'
-                . Html::checkbox($name, $checked, [
-                    'value' => $value,
-                    'class' => 'form-check-input',
-                    'id' => $name . '_' . $index
-                ])
-                . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                . '</div>';
+          return '<label class="checkbox-radio-style">' .
+                Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+                ' ' . $label . '</label>';
       }])
       ->label('a. Keadaan Umum'); ?>
 
@@ -99,14 +92,9 @@ $actionUrl = $dataform->isNewRecord
             'Pucat' => 'Pucat',
             'Kemerahan' => 'Kemerahan',
         ], ['itemOptions' => ['class' => 'form-check-input'],'item' => function($index, $label, $name, $checked, $value){
-         return '<div class="form-check">'
-                . Html::checkbox($name, $checked, [
-                    'value' => $value,
-                    'class' => 'form-check-input',
-                    'id' => $name . '_' . $index
-                ])
-                . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                . '</div>';
+          return '<label class="checkbox-radio-style">' .
+                Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+                ' ' . $label . '</label>';
       }])
       ->label('b. Warna Kulit'); ?>
 
@@ -176,14 +164,9 @@ $actionUrl = $dataform->isNewRecord
             Obesitas/overweight'=>'Obesitas / overweight'
         ], ['itemOptions' => ['class'=>'form-check-input'], 
         'item' => function($index, $label, $name, $checked, $value){
-            return '<div class="form-check">'
-                    . Html::checkbox($name, $checked, [
-                        'value' => $value,
-                        'class' => 'form-check-input',
-                        'id' => $name . '_' . $index
-                    ])
-                    . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                    . '</div>';
+          return '<label class="checkbox-radio-style">' .
+                Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+                ' ' . $label . '</label>';
         }]) ->label('c. Status gizi'); ?>
   </div>
 
@@ -198,14 +181,9 @@ $actionUrl = $dataform->isNewRecord
         ->checkboxList(['DM'=>'DM','Hipertensi'=>'Hipertensi','Jantung'=>'Jantung','Lain-lain'=>'Lain-lain'],
         ['itemOptions' => ['class'=>'form-check-input'], 
         'item' => function($index, $label, $name, $checked, $value){
-            return '<div class="form-check">'
-                    . Html::checkbox($name, $checked, [
-                        'value' => $value,
-                        'class' => 'form-check-input',
-                        'id' => $name . '_' . $index
-                    ])
-                    . Html::label($label, $name . '_' . $index, ['class' => 'form-check-label'])
-                    . '</div>';
+          return '<label class="checkbox-radio-style">' .
+                Html::checkbox($name, $checked, ['value' => $value, 'class' => 'single-checkbox']) .
+                ' ' . $label . '</label>';
         }])
         ->label('6. Riwayat penyakit sebelumnya'); ?>
 
@@ -289,32 +267,39 @@ $actionUrl = $dataform->isNewRecord
     $risikoFields = [
         ['label'=>'Riwayat jatuh dalam 3 bulan terakhir','name'=>'riwayat_jatuh','options'=>['0'=>'Tidak = 0','25'=>'Ya = 25']],
         ['label'=>'Diagnosa medis sekunder > 1','name'=>'diagnosa_sekunder','options'=>['0'=>'Tidak = 0','15'=>'Ya = 15']],
-        ['label'=>'Alat bantu jalan','name'=>'alat_bantu','options'=>['0'=>'Tidak/Bedrest/Perabot = 0','15'=>'Penopang, tongkat, walker = 15']],
+        ['label' => 'Alat bantu jalan','name' => 'alat_bantu','options' => [
+            '0'   => 'Tidak/Bedrest/Perabot = 0',
+            '15a' => 'Penopang, tongkat, walker = 15',
+            '15b' => 'Mencengkeram furniture/sesuatu untuk topangan = 15'
+        ]],
         ['label'=>'Akses IV / terapi heparin lock','name'=>'iv_heparin','options'=>['0'=>'Tidak = 0','20'=>'Ya = 20']],
-        ['label'=>'Berjalan/berpindah','name'=>'berjalan','options'=>['0'=>'Normal = 0','10'=>'Gangguan ringan = 10','20'=>'Terganggu/alat bantu/keseimbangan buruk = 20']],
-        ['label'=>'Status mental','name'=>'status_mental','options'=>['0'=>'Orientasi baik = 0','15'=>'Lupa/overestimate kemampuan = 15']],
+        ['label'=>'Berjalan/berpindah','name'=>'berjalan','options'=>['0'=>'Normal = 0','10'=>'Gangguan ringan = 10','20'=>'Terganggu/perlu bantuan/keseimbangan buruk = 20']],
+        ['label'=>'Status mental','name'=>'status_mental','options'=>['0'=>'Orientasi sesuai kemampuan diri = 0','15'=>'Lupa keterbatasan diri = 15']],
     ];
-    foreach($risikoFields as $i => $field): 
+    foreach ($risikoFields as $i => $field): 
         $value = $dataform->dataFields['resiko_jatuh'][$field['name']] ?? null;
+        $options = $field['options']; // ✅ restore $options
     ?>
-    <tr>
-      <td><?= $i+1 ?></td>
-      <td><?= $field['label'] ?></td>
-      <td>
-        <?= $form->field($dataform, "dataFields[resiko_jatuh][{$field['name']}]")
-            ->dropDownList($field['options'], [
-                'class'=>'form-select resiko-select',
-                'id'=>'resiko-' . $field['name'],
-            ])
-            ->label(false) ?>
-      </td>
-      <td>
-        <input class="form-control resiko-hasil" id="hasil-<?= $field['name'] ?>" readonly>
-      </td>
-    </tr>
+      <tr>
+        <td><?= $i + 1 ?></td>
+        <td><?= $field['label'] ?></td>
+        <td>
+          <?= $form->field($dataform, "dataFields[resiko_jatuh][{$field['name']}]")
+              ->dropDownList($options, [
+                  'class'=>'form-select resiko-select',
+                  'id'=>'resiko-' . $field['name'],
+                  'value' => $value
+              ])
+              ->label(false) ?>
+        </td>
+        <td>
+          <input class="form-control resiko-hasil" id="hasil-<?= $field['name'] ?>" readonly>
+        </td>
+      </tr>
     <?php endforeach; ?>
   </tbody>
 </table>
+
 
 <div class="row">
   <div class="col-md-4 ms-auto">
@@ -325,8 +310,11 @@ $actionUrl = $dataform->isNewRecord
         'readonly'=>true
     ]) ?>
     <?= Html::activeHiddenInput($dataform, 'dataFields[resiko_jatuh][nilai_total]', ['id'=>'resiko-total-hidden']) ?>
+
+    <small id="resiko-category" class="form-text text-muted"></small>
   </div>
 </div>
+
 
 
 <div class="mt-4">
@@ -355,15 +343,28 @@ if (modalEl) {
 function updateRiskRow(selectId, hasilId) {
   var sel = document.getElementById(selectId);
   var out = document.getElementById(hasilId);
-  if (sel && out) out.value = sel.value || 0;
+  if (sel && out) out.value = parseInt(sel.value || '0', 10);
 }
 function updateRiskTotal() {
   var sum = 0;
   document.querySelectorAll('.resiko-select').forEach(function(s){ sum += parseInt(s.value || '0', 10); });
   var total = document.getElementById('resiko-total');
   var hidden = document.getElementById('resiko-total-hidden');
+  var category = document.getElementById('resiko-category');
+
   if (total) total.value = sum;
   if (hidden) hidden.value = sum;
+
+  let catText = '';
+  if (sum >= 0 && sum <= 24) {
+    catText = "Tidak berisiko (0-24) - Perawatan yang baik";
+  } else if (sum >= 25 && sum <= 44) {
+    catText = "Resiko rendah (25-44) - Lakukan intervensi jatuh standar";
+  } else if (sum >= 45) {
+    catText = "Resiko tinggi (≥45) - Lakukan intervensi jatuh risiko tinggi";
+  }
+
+  if (category) category.textContent = catText;
 }
 document.querySelectorAll('.resiko-select').forEach(function(sel){
   sel.addEventListener('change', function(){
@@ -406,4 +407,12 @@ $(document).on('input', 'input[name="DataForm[dataFields][berat_badan]"], input[
 // also refresh when the modal is shown (in case fields are prefilled)
 $(document).on('shown.bs.modal', '#ModalInputForm', updateIMT);
 JS);
+
+$this->registerJs(<<<JS
+$(document).on('change', '.single-checkbox', function() {
+    $('.single-checkbox').not(this).prop('checked', false);
+});
+JS);
 ?>
+
+

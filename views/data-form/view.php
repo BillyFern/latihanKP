@@ -74,7 +74,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['Jalan tanpa bantuan' => 'Jalan tanpa bantuan', 'Kursi tanpa bantuan' => 'Kursi tanpa bantuan', 'Tempat tidur dorong' => 'Tempat tidur dorong', 'Lain-lain' => 'Lain-lain'];
 
                 // selected values (from JSON)
-                $selected = $data['cara_masuk'] ?? [];
+                $selected = (array) $data['cara_masuk'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -95,7 +95,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['Autoanamnesis' => 'Autoanamnesis', 'Aloanamnesis' => 'Aloanemnesis'];
 
                 // selected values (from JSON)
-                $selected = $data['anamnesis'] ?? [];
+                $selected = (array) $data['anamnesis'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -105,7 +105,15 @@ $this->registerCssFile('@web/css/print.css', [
                         </label>";
                 }
                 ?>
-                Diperoleh: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Hubungan: 
+                Diperoleh: 
+                <?php 
+                    $diperoleh = $data['diperoleh'];
+                    echo $diperoleh;
+                ?> &nbsp; Hubungan: 
+                <?php
+                    $hubungan = $data['hubungan'];
+                    echo $hubungan;
+                ?>
             </td> 
         </tr>
         <tr>
@@ -142,7 +150,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['Tidak tampak sakit' => 'Tidak tampak sakit', 'Sakit ringan' => 'Sakit ringan', 'Sedang' => 'Sedang', 'Berat' => 'Berat'];
 
                 // selected values (from JSON)
-                $selected = $data['keadaan_umum'] ?? [];
+                $selected = (array) $data['keadaan_umum'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -163,7 +171,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['Normal' => 'Normal', 'Sianosis' => 'Sianosis', 'Pucat' => 'Pucat', 'Kemerahan' => 'Kemerahan'];
 
                 // selected values (from JSON)
-                $selected = $data['warna_kulit'] ?? [];
+                $selected = (array) $data['warna_kulit'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -389,7 +397,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['Ideal' => 'Ideal', 'Kurang' => 'Kurang', 'Obesitas/overweight' => 'Obesitas/overweight'];
 
                 // selected values (from JSON)
-                $selected = $data['status_gizi'] ?? [];
+                $selected = (array) $data['status_gizi'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -420,7 +428,7 @@ $this->registerCssFile('@web/css/print.css', [
                 $options = ['DM' => 'DM', 'Hipertensi' => 'Hipertensi', 'Jantung' => 'Jantung', 'JantLain-lainung' => 'Lain-lain'];
 
                 // selected values (from JSON)
-                $selected = $data['riwayat_penyakit_sebelumnya'] ?? [];
+                $selected = (array) $data['riwayat_penyakit_sebelumnya'] ?? [];
 
                 // render checkboxes horizontally
                 foreach ($options as $key => $label) {
@@ -603,7 +611,8 @@ $this->registerCssFile('@web/css/print.css', [
                     <td style="text-align: center; border: solid black 1px;">0</td>
                     <td rowspan="3" style="text-align: center; border: solid black 1px;">
                         <?php 
-                            $alat_bantu = $data['resiko_jatuh']['alat_bantu'];
+                            $alat_bantu = $data['resiko_jatuh']['alat_bantu'] ?? '';
+                            $alat_bantu = preg_replace('/[^0-9]/', '', $alat_bantu); 
                             echo $alat_bantu;
                         ?>
                     </td>

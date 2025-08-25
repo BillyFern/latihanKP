@@ -10,17 +10,17 @@ $this->title = 'Halaman Registrasi Pasien';
 <div class="site-index">
 
     <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Data Pasien</h1>
+        <h1 class="display-4">Data Registrasi Pasien</h1>
     </div>
 
     <div class="body-content">
         <?= Html::button('Tambah Registrasi', [
             'class' => 'btn btn-secondary float-end mb-3 mb-3',
             'data-bs-toggle' => 'modal',
-            'data-bs-target' => '#ModalRegistrasi'
+            'data-bs-target' => '#ModalInputRegistrasi'
         ]) ?>
         <?php Modal::begin([
-            'id' => 'ModalRegistrasi',
+            'id' => 'ModalInputRegistrasi',
             'title' => '<h5>Tambahkan Registrasi Pasien</h5>',
             'size' => Modal::SIZE_LARGE,
         ]); ?>
@@ -32,17 +32,30 @@ $this->title = 'Halaman Registrasi Pasien';
         </div>
 
         <?php Modal::end(); ?>
+
+        <div>
+            <div class="col-md-4">
+                <?= Html::beginForm(['registrasi/index'], 'get') ?>
+                    <div class="input-group">
+                        <?= Html::textInput('q', Yii::$app->request->get('q'), [
+                            'class' => 'form-control',
+                            'placeholder' => 'Cari pasien (nama/NIK)...'
+                        ]) ?>
+                        <button class="btn btn-primary" type="submit">Cari</button>
+                    </div>
+                <?= Html::endForm() ?>
+            </div>
+        </div>
         <table class="table table-striped table-bordered table-hover">
             <thead class="thead-dark">
                 <tr>
+                    <th>Id Registrasi</th>
                     <th>No. Registrasi</th>
                     <th>No. Rekam Medis</th>
                     <th>Nama Pasien</th>
                     <th>Tanggal Lahir</th>
                     <th>NIK</th>
-                    <th>Create by</th>
                     <th>Create At Time</th>
-                    <th>Update by</th>
                     <th>Update At Time</th>
                     <th>Action</th>
                 </tr>
@@ -54,23 +67,36 @@ $this->title = 'Halaman Registrasi Pasien';
                         $dataExists = in_array($registrator->id_registrasi, $existingDataIds);
                     ?>
                     <tr>
+                        <td><?= Html::encode($registrator->id_registrasi) ?></td>
                         <td><?= Html::encode($registrator->no_registrasi) ?></td>
                         <td><?= Html::encode($registrator->no_rekam_medis) ?></td>
                         <td><?= Html::encode($registrator->nama_pasien) ?></td>
                         <td><?= Html::encode($registrator->tanggal_lahir) ?></td>
                         <td><?= Html::encode($registrator->nik) ?></td>
-                        <td><?= Html::encode($registrator->create_by) ?></td>
                         <td><?= Html::encode($registrator->create_time_at) ?></td>
-                        <td><?= Html::encode($registrator->update_by) ?></td>
                         <td><?= Html::encode($registrator->update_time_at) ?></td>
                         <td>
                             <?php if (!$dataExists): ?>
                                 <?= Html::button('<i class="fa-solid fa-plus"></i>', [
                                     'class' => 'btn btn-success btn-sm',
-                                    'title' => 'Input',
+                                    'title' => 'Input Form',
                                     'data-id' => $registrator->id_registrasi, 
                                     'data-bs-toggle' => 'modal',
                                     'data-bs-target' => '#ModalInputForm'
+                                ]) ?>
+                                <?= Html::button('<i class="fa-solid fa-pen"></i>', [
+                                    'class' => 'btn btn-warning btn-sm',
+                                    'title' => 'Edit Registrasi',
+                                    'data-id' => $registrator->id_registrasi, 
+                                    'data-bs-toggle' => 'modal',
+                                    'data-bs-target' => '#ModalEditRegistrasi'
+                                ]) ?>
+                                <?= Html::button('<i class="fa-solid fa-trash"></i>', [
+                                    'class' => 'btn btn-danger btn-sm delete-btn',
+                                    'title' => 'Delete Registrasi',
+                                    'data-id' => $registrator->id_registrasi, 
+                                    'data-bs-toggle' => 'modal',
+                                    'data-bs-target' => '#ModalDeleteRegistrasi'
                                 ]) ?>
                             <?php else: ?>
                                 <?= Html::a('<i class="fa-solid fa-eye"></i>', 
@@ -82,17 +108,17 @@ $this->title = 'Halaman Registrasi Pasien';
                                 ?>
                                 <?= Html::button('<i class="fa-solid fa-pen"></i>', [
                                     'class' => 'btn btn-warning btn-sm',
-                                    'title' => 'Edit',
+                                    'title' => 'Edit Form',
                                     'data-id' => $registrator->id_registrasi, 
                                     'data-bs-toggle' => 'modal',
                                     'data-bs-target' => '#ModalEditForm'
                                 ]) ?>
                                 <?= Html::button('<i class="fa-solid fa-trash"></i>', [
                                     'class' => 'btn btn-danger btn-sm delete-btn',
-                                    'title' => 'Delete',
+                                    'title' => 'Delete Form',
                                     'data-id' => $registrator->id_registrasi, 
                                     'data-bs-toggle' => 'modal',
-                                    'data-bs-target' => '#ModalDelete'
+                                    'data-bs-target' => '#ModalDeleteForm'
                                 ]) ?>
                             <?php endif; ?>
                         </td>
@@ -127,7 +153,7 @@ $this->title = 'Halaman Registrasi Pasien';
         <?php Modal::end(); ?>
 
         <?php Modal::begin([
-            'id' => 'ModalDelete',
+            'id' => 'ModalDeleteForm',
             'title' => '<h5>Confirm Delete</h5>',
         ]);
         ?>
@@ -170,7 +196,11 @@ function initModalForm(container) {
     function updateRiskRow(sel) {
         var tr = $(sel).closest('tr'); 
         var out = tr.find('.resiko-hasil'); 
-        if (out.length) out.val(sel.value || 0);
+        if (out.length) {
+            var val = $(sel).val() || "0";
+            var num = parseInt(val, 10); 
+            out.val(num);
+        }
     }
 
     function updateRiskTotal() {

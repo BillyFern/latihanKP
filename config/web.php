@@ -52,7 +52,12 @@ $config = [
         ],
         */
     ],
-    'params' => $params,
+    'params' => [
+        'adminEmail' => 'admin@example.com',
+        'senderEmail' => 'noreply@example.com',
+        'senderName' => 'Example.com mailer',
+        'bsVersion' => '5.x', // <-- TAMBAHKAN BARIS INI
+    ],
 ];
 
 if (YII_ENV_DEV) {

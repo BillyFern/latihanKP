@@ -48,13 +48,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
+                . Html::beginForm(['/site/logout'])
+                . Html::submitButton(
+                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    ['class' => 'nav-link btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
         ]
     ]);
     NavBar::end();
@@ -66,7 +66,25 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <?php if (!empty($this->params['breadcrumbs'])): ?>
             <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
         <?php endif ?>
-        <?= Alert::widget() ?>
+
+        <?php // Widget Alert bawaan Yii, bisa dihapus jika Anda menggunakan flash message manual di bawah ?>
+        <?php //= Alert::widget() ?>
+
+        <?php if (Yii::$app->session->hasFlash('success')): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= Yii::$app->session->getFlash('success') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (Yii::$app->session->hasFlash('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= Yii::$app->session->getFlash('error') ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php // INI ADALAH SATU-SATUNYA PANGGILAN KONTEN YANG DIPERLUKAN ?>
         <?= $content ?>
     </div>
 </main>

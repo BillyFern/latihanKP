@@ -1,0 +1,50 @@
+@page {
+  size: A4;
+  margin-left: 20mm;
+  margin-right: 25mm;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 10.5px;
+  line-height: 1.1;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: none;
+  /* padding: 4px; */
+}
+
+@media print {
+  button {
+    display: none !important;
+  }
+  .pengkajian-title {
+    background-color: gray !important;
+    -webkit-print-color-adjust: exact; /* Chrome, Safari */
+    print-color-adjust: exact;        /* Modern browsers */
+    color-adjust: exact;              /* Fallback */
+  }
+
+  ol li {
+    display: none !important;
+  }
+}
+
+h5 {
+    margin-bottom: 0;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.pengkajian-title {
+    background-color: gray !important;
+    margin-top: 1pt;
+}

@@ -18,6 +18,13 @@ class RegistrasiController extends Controller
         // 2. `with('pasien')`: Mengambil data relasi secara efisien (eager loading).
         $query = Registrasi::find()->joinWith('pasien')->with('pasien');
 
+        $q = Yii::$app->request->get('q');
+        if (!empty($q)) {
+            $query->andFilterWhere(['ilike', 'nama_pasien', $q])
+                ->orFilterWhere(['like', "CAST(nik AS TEXT)", $q])
+                ->orFilterWhere(['like', "CAST(no_registrasi AS TEXT)", $q]);
+        }
+    
         $pagination = new Pagination([
             'defaultPageSize' => 5,
             'totalCount' => $query->count(),

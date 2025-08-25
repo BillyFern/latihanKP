@@ -19,11 +19,11 @@ class RegistrasiController extends Controller
         $query = Registrasi::find()->joinWith('pasien')->with('pasien');
 
         $q = Yii::$app->request->get('q');
-        if (!empty($q)) {
-            $query->andFilterWhere(['ilike', 'nama_pasien', $q])
-                ->orFilterWhere(['like', "CAST(nik AS TEXT)", $q])
-                ->orFilterWhere(['like', "CAST(no_registrasi AS TEXT)", $q]);
-        }
+        // if (!empty($q)) {
+        //     $query->andFilterWhere(['ilike', 'nama_pasien', $q])
+        //         ->orFilterWhere(['like', "CAST(nik AS TEXT)", $q])
+        //         ->orFilterWhere(['like', "CAST(no_registrasi AS TEXT)", $q]);
+        // }
     
         $pagination = new Pagination([
             'defaultPageSize' => 5,

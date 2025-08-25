@@ -40,34 +40,6 @@ class Registrasi extends ActiveRecord
     }
 
     // In your Model (e.g. Registrasi.php)
-    public function beforeSave($insert)
-    {
-        if ($insert) {
-            // Get today’s date in ddmmyy
-            $date = date('dmy');
-
-            // Find last no_registrasi starting with today’s date
-            $last = self::find()
-                ->where(['like', "CAST(no_registrasi AS TEXT)", $date . '%', false])
-                ->orderBy(['no_registrasi' => SORT_DESC])
-                ->one();
-
-            if ($last) {
-                // Get the last 3 digits and increment
-                $lastNumber = (int)substr($last->no_registrasi, -3);
-                $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-            } else {
-                // If no record today, start from 001
-                $newNumber = '001';
-            }
-
-            // Set the new no_registrasi
-            $this->no_registrasi = $date . $newNumber;
-            $this->no_rekam_medis = $date . $newNumber;
-        }
-
-        return parent::beforeSave($insert);
-    }
 
     public function behaviors()
     {

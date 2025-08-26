@@ -37,17 +37,22 @@ use kartik\select2\Select2;
             return $model['no_rekam_medis'] . ' - ' . $model['nama'];
         }
     );
+
+    $selectId = 'registrasi-no_rm-' . ($model->id_registrasi ?? 'new');
     ?>
 
     <?= $form->field($model, 'no_rekam_medis')->widget(Select2::class, [
         'data' => $pasienList,
         'options' => [
+            'id' => $selectId,
+            'class' => 'select2-init',   // <- important
             'placeholder' => 'Ketik untuk mencari No. RM atau Nama Pasien...',
-            'value' => $model->no_rekam_medis, // preselect current value
+            'data-placeholder' => 'Ketik untuk mencari No. RM atau Nama Pasien...',
         ],
         'pluginOptions' => [
-            'allowClear' => true,
+            'allowClear' => true, // set false if you don't want the ×
         ],
+        'theme' => Select2::THEME_BOOTSTRAP, // <- ADD THIS
     ])->label('Pilih Pasien') ?>
 
     <div class="form-group mt-4">
@@ -67,3 +72,5 @@ use kartik\select2\Select2;
 // 3. Make sure kartik-v select2 extension is installed:
 //    composer require kartik-v/yii2-widget-select2
 ?>
+
+

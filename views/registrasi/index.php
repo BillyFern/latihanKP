@@ -4,6 +4,13 @@ use yii\helpers\Html;
 use yii\bootstrap5\Modal;
 use yii\widgets\LinkPager;
 
+\kartik\select2\Select2Asset::register($this);
+$this->registerCssFile(
+    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css',
+    ['depends' => [\kartik\select2\Select2Asset::class]]
+);
+
+
 /** @var yii\web\View $this */
 /** @var app\models\Registrasi[] $registrasi */
 /** @var yii\data\Pagination $pagination */
@@ -101,7 +108,7 @@ $this->title = 'Halaman Registrasi Pasien';
                                     'data-bs-target' => '#ModalEditRegistrasi'
                                 ]) ?>
                                 <?= Html::button('<i class="fa-solid fa-trash"></i>', [
-                                    'class' => 'btn btn-danger btn-sm delete-btn',
+                                    'class' => 'btn btn-danger btn-sm delete-btn-registrasi',
                                     'title' => 'Delete Registrasi',
                                     'data-id' => $registrator->id_registrasi, 
                                     'data-bs-toggle' => 'modal',
@@ -146,6 +153,19 @@ $this->title = 'Halaman Registrasi Pasien';
         </div>
         <?php Modal::end(); ?>
 
+        <?php Modal::begin([
+            'id' => 'ModalDeleteRegistrasi',
+            'title' => '<h5>Konfirmasi Hapus</h5>',
+        ]); ?>
+            <p>Apakah Anda yakin ingin menghapus registrasi ini?</p>
+            <form id="delete-form-registrasi" method="post" action="">
+                <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </div>
+            </form>
+        <?php Modal::end(); ?>
         <!-- Modals -->
         <?php Modal::begin(['id' => 'ModalInputForm', 'title' => '<h5>Input Form Data</h5>', 'size' => Modal::SIZE_LARGE]); ?>
         <div id="formDataContent">
@@ -160,7 +180,7 @@ $this->title = 'Halaman Registrasi Pasien';
 
         <?php Modal::begin([
             'id' => 'ModalDelete', 
-             'title' => '<h5>Konfirmasi Hapus</h5>'
+            'title' => '<h5>Konfirmasi Hapus</h5>'
         ]); ?>
         <p>Apakah Anda yakin ingin menghapus data ini?</p>
       
@@ -176,9 +196,9 @@ $this->title = 'Halaman Registrasi Pasien';
 </div>
 
 <?php
-$script = <<< JS
+$script = <<<JS
+// --- existing modal form helpers (unchanged)
 function initModalForm(container) {
-    // IMT calculation
     function updateIMT() {
         var berat = parseFloat($(container).find('input[name="DataForm[dataFields][berat_badan]"]').val());
         var tinggiCm = parseFloat($(container).find('input[name="DataForm[dataFields][tinggi_badan]"]').val());
@@ -192,17 +212,15 @@ function initModalForm(container) {
             imtInput.val('');
         }
     }
-
-    $(container).on('input', 'input[name="DataForm[dataFields][berat_badan]"], input[name="DataForm[dataFields][tinggi_badan]"]', updateIMT);
+    $(container).off('input.imt').on('input.imt', 'input[name="DataForm[dataFields][berat_badan]"], input[name="DataForm[dataFields][tinggi_badan]"]', updateIMT);
     updateIMT();
 
-    // Risiko Jatuh calculation
     function updateRiskRow(sel) {
-        var tr = $(sel).closest('tr'); 
-        var out = tr.find('.resiko-hasil'); 
+        var tr = $(sel).closest('tr');
+        var out = tr.find('.resiko-hasil');
         if (out.length) {
             var val = $(sel).val() || "0";
-            var num = parseInt(val, 10); 
+            var num = parseInt(val, 10);
             out.val(num);
         }
     }
@@ -218,24 +236,99 @@ function initModalForm(container) {
 
     $(container).find('.resiko-select').each(function(){
         var sel = this;
-        $(sel).off('change').on('change', function(){
+        $(sel).off('change.resiko').on('change.resiko', function(){
             updateRiskRow(sel);
             updateRiskTotal();
         });
-        // set initial value
         updateRiskRow(sel);
     });
     updateRiskTotal();
 }
 
 
+// --- helper: initialize Select2 only for .select2-init inside a container
+function initSelect2In(container, modalSelector) {
+    var \$c = $(container);
+    \$c.find('select.select2-init').each(function(){
+        var \$s = $(this);
+        // destroy prior instance only on this element
+        if (\$s.data('select2')) {
+            try { \$s.select2('destroy'); } catch(e) {}
+        }
+        var opts = {
+            width: '100%',
+            allowClear: true,
+            placeholder: \$s.data('placeholder') || \$s.attr('placeholder') || 'Select...',
+            theme: 'bootstrap-5'
+        };
+        if (modalSelector) {
+            opts.dropdownParent = $(modalSelector);
+        }
+        try {
+            \$s.select2(opts);
+        } catch(e) {
+            console.error('Select2 init error:', e, \$s);
+        }
+    });
+}
+
+// --- EDIT modal: load form via AJAX on show, then init Select2 + any form logic
+$('#ModalEditRegistrasi').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    var container = $('#editRegistrasiFormContent');
+
+    container.html('<p>Loading...</p>');
+
+    $.get('index.php?r=registrasi/update', { id: id })
+    .done(function(data) {
+        // remove any select2 inside this container first (precaution)
+        container.find('select.select2-init').each(function(){
+            if ($(this).data('select2')) {
+                try { $(this).select2('destroy'); } catch(e) {}
+            }
+        });
+
+        container.html(data);
+
+        // initialize select2 inside the edit modal
+        initSelect2In(container, '#ModalEditRegistrasi');
+
+        // initialize other JS-driven features in the loaded form
+        if (typeof initModalForm === 'function') {
+            try { initModalForm(container); } catch(e) { console.warn(e); }
+        }
+    })
+    .fail(function(xhr) {
+        container.html('<div class="text-danger">Failed to load form (HTTP ' + xhr.status + ')</div>');
+        console.error(xhr.responseText || xhr.statusText);
+    });
+});
+
+// --- CREATE modal: create form is server-rendered into #registrasiFormContent
+// initialize select2 for create form on page load, and re-init when modal opens
+$(function() {
+    initSelect2In($('#registrasiFormContent'), '#ModalInputRegistrasi');
+});
+$('#ModalInputRegistrasi').on('shown.bs.modal', function() {
+    initSelect2In($('#registrasiFormContent'), '#ModalInputRegistrasi');
+});
+
+// --- when edit/create modals hide, destroy select2 instances inside them to avoid duplicates
+$('#ModalEditRegistrasi, #ModalInputRegistrasi, #ModalInputForm').on('hidden.bs.modal', function() {
+    $(this).find('select.select2-init').each(function(){
+        if ($(this).data('select2')) {
+            try { $(this).select2('destroy'); } catch(e) {}
+        }
+    });
+});
+
+// --- existing handlers for loading DataForm edit and delete (unchanged)
 $(document).on('click', '[data-bs-target="#ModalEditForm"]', function() {
     var id = $(this).data('id');
     $.get('index.php?r=data-form/edit', { id_registrasi: id }, function(data) {
         var container = $('#editDataContent');
         container.html(data);
-
-        // initialize calculations on the new content
         initModalForm(container);
     });
 });
@@ -245,12 +338,20 @@ $(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
     $('#delete-form').attr('action', 'index.php?r=data-form/delete&id_registrasi=' + id);
 });
 
-$(document).on('click', '[data-bs-target="#ModalEditRegistrasi"]', function() {
+$(document).on('click', '.delete-btn', function () {
+    let id = $(this).data('id');
+    $('#confirmDelete').data('id', id);
+});
+
+
+$(document).on('click', '[data-bs-target="#ModalDeleteRegistrasi"]', function() {
     var id = $(this).data('id');
-    $.get('index.php?r=registrasi/update', { id: id }, function(data) {
-        var container = $('#editRegistrasiFormContent');
-        container.html(data);
-    });
+    $('#delete-form-registrasi').attr('action', 'index.php?r=registrasi/delete&id=' + id);
+});
+
+$(document).on('click', '.delete-btn-registrasi', function () {
+    let id = $(this).data('id');
+    $('#confirmDelete').data('id', id);
 });
 
 JS;

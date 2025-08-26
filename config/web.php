@@ -38,7 +38,8 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    // PERBAIKI SEPERTI INI:
+                    'levels' => ['error', 'warning', 'info'],
                 ],
             ],
         ],

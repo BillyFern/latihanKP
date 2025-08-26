@@ -19,11 +19,11 @@ class RegistrasiController extends Controller
         $query = Registrasi::find()->joinWith('pasien')->with('pasien');
 
         $q = Yii::$app->request->get('q');
-        // if (!empty($q)) {
-        //     $query->andFilterWhere(['ilike', 'nama_pasien', $q])
-        //         ->orFilterWhere(['like', "CAST(nik AS TEXT)", $q])
-        //         ->orFilterWhere(['like', "CAST(no_registrasi AS TEXT)", $q]);
-        // }
+        if (!empty($q)) {
+            $query->andFilterWhere(['ilike', 'pasien.nama', $q])
+                ->orFilterWhere(['like', "CAST(pasien.nik AS TEXT)", $q])
+                ->orFilterWhere(['like', "CAST(no_registrasi AS TEXT)", $q]);
+        }
     
         $pagination = new Pagination([
             'defaultPageSize' => 5,
@@ -83,17 +83,25 @@ class RegistrasiController extends Controller
     
     public function actionUpdate($id)
     {
-        try {
-            $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-            return $this->renderAjax('_form', [
-                'model' => $model,
-            ]);
-        } catch (\Throwable $e) {
-            // For debugging: output the error directly
-            Yii::error($e->getMessage() . "\n" . $e->getTraceAsString());
-            return "<pre style='color:red;'>".$e->getMessage()."\n".$e->getTraceAsString()."</pre>";
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Data Registrasi Berhasil Diubah!');
+            return $this->redirect(['index']);
         }
+
+        return $this->renderAjax('_form', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        if (($model = Registrasi::findOne($id)) !== null) {
+            $model->delete();
+            Yii::$app->session->setFlash('success', 'Data Registrasi Berhasil dihapus!');
+        }
+        return $this->redirect(['index']);
     }
 }
 

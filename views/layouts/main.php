@@ -49,7 +49,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'items' => [
             ['label' => 'Registrasi', 'url' => ['registrasi/index']],
             ['label' => 'Data Form', 'url' => ['/pasien/index']],
-            ['label' => 'Login', 'url' => ['/site/login']],
+            ['label' => 'Login', 'url' => ['/site/login']], // logingit 
         ],
         'activateParents' => true, // aktifkan highlight
     ]);

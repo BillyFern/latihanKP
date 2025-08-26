@@ -4,7 +4,6 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
-use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
@@ -35,31 +34,59 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <header id="header">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => Html::img('@web/img/logo3.png', [
+            'alt'=>Yii::$app->name,
+            'style'=>'height:40px;', // Logo kiri atas
+        ]),
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+        'options' => [
+            'class' => 'navbar navbar-expand-md custom-navbar',
+        ],
     ]);
+
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
+        'options' => ['class' => 'navbar-nav ms-3'],
         'items' => [
-            ['label' => 'Home', 'url' => ['registrasi/index']],
-            ['label' => 'Pasien', 'url' => ['/pasien/index']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                . Html::beginForm(['/site/logout'])
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'nav-link btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-        ]
+            ['label' => 'Registrasi', 'url' => ['registrasi/index']],
+            ['label' => 'Data Form', 'url' => ['/pasien/index']],
+            ['label' => 'Login', 'url' => ['/site/login']],
+        ],
+        'activateParents' => true, // aktifkan highlight
     ]);
+
     NavBar::end();
     ?>
 </header>
+
+<?php
+// CSS khusus untuk navbar
+$this->registerCss("
+    .custom-navbar {
+        background-color: #0f2557; /* biru tua */
+        padding: 0.5rem 1rem;
+    }
+    .custom-navbar .navbar-brand img {
+        max-height: 40px;
+    }
+    .custom-navbar .navbar-nav .nav-link {
+        color: #fff;
+        font-weight: 500;
+        margin-right: 15px;
+        border-radius: 8px 8px 0 0;
+        padding: 6px 12px;
+    }
+    .custom-navbar .navbar-nav .nav-link.active,
+    .custom-navbar .navbar-nav .nav-link:hover {
+        background-color: #fff;
+        color: #0f2557 !important;
+    }
+    @media (max-width: 768px) {
+        .custom-navbar .navbar-nav .nav-link {
+            margin: 5px 0;
+        }
+    }
+");
+?>
 
 <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
@@ -67,24 +94,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
         <?php endif ?>
 
-        <?php // Widget Alert bawaan Yii, bisa dihapus jika Anda menggunakan flash message manual di bawah ?>
-        <?php //= Alert::widget() ?>
-
-        <?php if (Yii::$app->session->hasFlash('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?= Yii::$app->session->getFlash('success') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (Yii::$app->session->hasFlash('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <?= Yii::$app->session->getFlash('error') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php // INI ADALAH SATU-SATUNYA PANGGILAN KONTEN YANG DIPERLUKAN ?>
         <?= $content ?>
     </div>
 </main>

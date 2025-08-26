@@ -4,7 +4,7 @@ return [
     'class' => 'yii\db\Connection',
     'dsn' => 'pgsql:host=localhost;port=5432;dbname=klinik',
     'username' => 'postgres',
-    'password' => '12345',
+    'password' => '123',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)

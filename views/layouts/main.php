@@ -50,7 +50,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-nav ms-3'],
         'items' => [
             ['label' => 'Registrasi', 'url' => ['registrasi/index']],
-            ['label' => 'Data Form', 'url' => ['/pasien/index']],
+            ['label' => 'Pasien', 'url' => ['/pasien/index']],
             ['label' => 'Login', 'url' => ['/site/login']], // logingit 
         ],
         'activateParents' => true, // aktifkan highlight

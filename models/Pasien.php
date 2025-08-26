@@ -8,19 +8,6 @@ use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\db\Expression;
 
-/**
- * This is the model class for table "pasien".
- *
- * @property int $id_pasien
- * @property int $no_rekam_medis
- * @property string|null $nama
- * @property string|null $tanggal_lahir
- * @property string|null $nik
- * @property int|null $create_by
- * @property string|null $create_time_at
- * @property int|null $update_by
- * @property string|null $update_time_at
- */
 class Pasien extends ActiveRecord
 {
     public static function tableName()
@@ -31,13 +18,46 @@ class Pasien extends ActiveRecord
     public function rules()
     {
         return [
+            // Aturan dasar
             [['nama', 'tanggal_lahir', 'nik'], 'required'],
-            [['nik'], 'filter', 'filter' => 'strval'],
-            [['no_rekam_medis'], 'required', 'on' => 'update'],
-            [['no_rekam_medis', 'create_by', 'update_by'], 'integer'],
+            [['create_by', 'update_by'], 'integer'],
+            // no_rekam_medis kita biarkan sebagai safe, karena tidak di-input dari form
+            [['no_rekam_medis'], 'safe'],
             [['tanggal_lahir', 'create_time_at', 'update_time_at'], 'safe'],
             [['nama'], 'string', 'max' => 255],
-            [['no_rekam_medis', 'nik'], 'unique'],
+
+            // --- INI ADALAH PERBAIKAN FINAL ---
+
+            // 1. Validasi 'no_rekam_medis' unik HANYA SAAT MEMBUAT RECORD BARU.
+            //    Ini memastikan aturan ini 100% tidak akan berjalan saat update.
+            [
+                'no_rekam_medis',
+                'unique',
+                'when' => function ($model) {
+                    return $model->isNewRecord;
+                },
+                'message' => 'No. Rekam Medis ini sudah ada (kesalahan sistem).'
+            ],
+
+            // 2. Validasi 'nik' unik HANYA JIKA NILAINYA BENAR-BENAR BERBEDA.
+            //    Kita bandingkan nilainya secara manual untuk menghindari masalah tipe data.
+            [
+                'nik',
+                'unique',
+                'when' => function ($model) {
+                    // Jangan jalankan validasi jika ini record baru (sudah dicover 'required')
+                    if ($model->isNewRecord) {
+                        return true;
+                    }
+                    // Jalankan validasi HANYA JIKA nilai lama TIDAK SAMA DENGAN nilai baru
+                    // Tanda '==' akan membandingkan nilai tanpa peduli tipe data (string vs integer)
+                    return $model->getOldAttribute('nik') != $model->nik;
+                },
+                'message' => 'NIK ini sudah terdaftar.'
+            ],
+
+            // Aturan format NIK
+            [['nik'], 'filter', 'filter' => 'strval'],
             [['nik'], 'string', 'length' => 16, 'message' => 'NIK harus 16 digit.'],
             [['nik'], 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'NIK hanya boleh berisi angka.'],
         ];
@@ -71,7 +91,8 @@ class Pasien extends ActiveRecord
                 'class' => BlameableBehavior::class,
                 'createdByAttribute' => 'create_by',
                 'updatedByAttribute' => 'update_by',
-                'defaultValue' => 1, 
+                // Sebaiknya nilai default di-handle oleh controller atau biarkan null
+                // 'defaultValue' => 1, 
             ],
         ];
     }
@@ -79,41 +100,32 @@ class Pasien extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($insert && empty($this->no_rekam_medis)) {
+            // Jika ini adalah record BARU ($insert = true)
+            if ($insert) {
+                // Generate nomor rekam medis hanya saat pembuatan data baru
                 $this->no_rekam_medis = $this->generateNoRekamMedis();
             }
+            // Tidak perlu ada logika apa pun untuk 'update' di sini
+            // karena no_rekam_medis dan NIK sudah di-handle oleh rules().
             return true;
         }
         return false;
     }
 
-    /**
-     * KUNCI PERBAIKAN: Logika baru untuk generate No Rekam Medis.
-     * Metode ini lebih andal dan efisien.
-     * @return int
-     */
+
     private function generateNoRekamMedis()
     {
         $year = date('Y');
-        
-        // Menentukan rentang nomor untuk tahun ini (misal: 202500000000 s/d 202599999999)
-        $startOfYear = (int) ($year . '00000000');
-        $endOfYear = (int) ($year . '99999999');
+        // Menggunakan string untuk menghindari masalah integer overflow pada sistem 32-bit
+        $startOfYear = $year . '00000000';
+        $endOfYear   = $year . '99999999';
 
-        // Mencari nomor rekam medis TERTINGGI di tahun ini
         $maxRm = self::find()
             ->where(['between', 'no_rekam_medis', $startOfYear, $endOfYear])
             ->max('no_rekam_medis');
 
-        if ($maxRm) {
-            // Jika sudah ada nomor, tambahkan 1
-            $newRm = $maxRm + 1;
-        } else {
-            // Jika belum ada, buat nomor pertama untuk tahun ini
-            $newRm = (int) ($year . '00000001');
-        }
-        
-        return $newRm;
+        // Jika belum ada rekam medis di tahun ini, mulai dari 1. Jika sudah ada, tambahkan 1.
+        return $maxRm ? ($maxRm + 1) : (int)($year . '00000001');
     }
 
     public function getTanggalLahirFormatted()

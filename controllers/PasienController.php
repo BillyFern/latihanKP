@@ -40,7 +40,7 @@ class PasienController extends Controller
     {
         $searchModel = new PasienSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-        
+
         // Menyiapkan model kosong untuk form 'create' di dalam modal
         $model = new Pasien();
 
@@ -70,7 +70,7 @@ class PasienController extends Controller
                 Yii::$app->session->setFlash('error', $errors);
             }
         }
-        
+
         // Selalu kembali ke halaman index setelah mencoba menyimpan
         return $this->redirect(['index']);
     }
@@ -89,20 +89,30 @@ class PasienController extends Controller
     }
 
     /**
-     * Updates an existing Pasien model.
+     * Updates an existing Pasien model from a modal form.
+     * On success or failure, it redirects back to the index page.
      * @param int $id_pasien ID Pasien
-     * @return string|\yii\web\Response
+     * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id_pasien)
     {
         $model = $this->findModel($id_pasien);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data pasien berhasil diubah!');
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Data pasien berhasil diubah!');
+            } else {
+                // Jika gagal, kirim error via flash message, sama seperti actionCreate
+                $errors = \yii\helpers\Html::errorSummary($model, ['header' => '<strong>Mohon perbaiki kesalahan berikut:</strong>']);
+                Yii::$app->session->setFlash('error', $errors);
+            }
+            // Selalu redirect kembali ke halaman index
             return $this->redirect(['index']);
         }
 
+        // Baris ini tidak akan dieksekusi jika form modal di-submit,
+        // hanya jika URL /update diakses langsung via GET request.
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -135,7 +145,7 @@ class PasienController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-    
+
     /**
      * Action for Select2 AJAX search.
      * @param string|null $q

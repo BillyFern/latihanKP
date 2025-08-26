@@ -70,4 +70,30 @@ class RegistrasiController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    protected function findModel($id)
+    {
+        if (($model = \app\models\Registrasi::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new \yii\web\NotFoundHttpException('The requested registrasi does not exist.');
+    }
+
+    
+    public function actionUpdate($id)
+    {
+        try {
+            $model = $this->findModel($id);
+
+            return $this->renderAjax('_form', [
+                'model' => $model,
+            ]);
+        } catch (\Throwable $e) {
+            // For debugging: output the error directly
+            Yii::error($e->getMessage() . "\n" . $e->getTraceAsString());
+            return "<pre style='color:red;'>".$e->getMessage()."\n".$e->getTraceAsString()."</pre>";
+        }
+    }
 }
+

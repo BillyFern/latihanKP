@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\models\Pasien;
 use yii\helpers\ArrayHelper;
-use kartik\select2\Select2; // Menggunakan widget Select2 untuk dropdown pencarian
+use kartik\select2\Select2;
 
 /** @var yii\web\View $this */
 /** @var app\models\Registrasi $model */
@@ -14,35 +14,46 @@ use kartik\select2\Select2; // Menggunakan widget Select2 untuk dropdown pencari
 
 <div class="registrasi-form">
 
-    <?php $form = ActiveForm::begin([
+    <?php 
+    // Set form action dynamically: 'create' for new record, 'update' for existing
+    $action = $model->isNewRecord 
+        ? ['registrasi/create'] 
+        : ['registrasi/update', 'id' => $model->id_registrasi];
+
+    $form = ActiveForm::begin([
         'id' => 'registrasi-form',
-        'action' => ['registrasi/create'], // Form ini akan dikirim ke action 'create'
+        'action' => $action,
         'method' => 'post',
-    ]); ?>
+        'options' => ['data-pjax' => true], // optional if using PJAX
+    ]); 
+    ?>
 
     <?php
-    // Menyiapkan data pasien untuk dropdown.
-    // Formatnya adalah: 'no_rekam_medis' => 'no_rekam_medis - nama_pasien'
-    $pasienList = ArrayHelper::map(Pasien::find()->orderBy('nama')->asArray()->all(), 'no_rekam_medis', function($model) {
-        return $model['no_rekam_medis'] . ' - ' . $model['nama'];
-    });
+    // Prepare pasien dropdown data
+    $pasienList = ArrayHelper::map(
+        Pasien::find()->orderBy('nama')->asArray()->all(), 
+        'no_rekam_medis', 
+        function($model) {
+            return $model['no_rekam_medis'] . ' - ' . $model['nama'];
+        }
+    );
     ?>
 
     <?= $form->field($model, 'no_rekam_medis')->widget(Select2::class, [
         'data' => $pasienList,
-        'options' => ['placeholder' => 'Ketik untuk mencari No. RM atau Nama Pasien...'],
+        'options' => [
+            'placeholder' => 'Ketik untuk mencari No. RM atau Nama Pasien...',
+            'value' => $model->no_rekam_medis, // preselect current value
+        ],
         'pluginOptions' => [
-            'allowClear' => true // Menambahkan tombol (x) untuk menghapus pilihan
+            'allowClear' => true,
         ],
     ])->label('Pilih Pasien') ?>
 
-    <!-- 
-        Field 'no_registrasi' tidak perlukan di sini karena akan 
-        di-generate secara otomatis oleh model saat data disimpan.
-    -->
-
     <div class="form-group mt-4">
-        <?= Html::submitButton('Simpan Registrasi', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Simpan Registrasi' : 'Update Registrasi', [
+            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -50,7 +61,9 @@ use kartik\select2\Select2; // Menggunakan widget Select2 untuk dropdown pencari
 </div>
 
 <?php
-// CATATAN:
-// Widget Select2 adalah bagian dari ekstensi kartik-v. Pastikan Anda sudah menginstalnya:
-// composer require kartik-v/yii2-widget-select2
+// NOTE:
+// 1. This form now works for both creating and updating.
+// 2. Preselects the current pasien when editing.
+// 3. Make sure kartik-v select2 extension is installed:
+//    composer require kartik-v/yii2-widget-select2
 ?>

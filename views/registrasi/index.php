@@ -63,9 +63,7 @@ $this->title = 'Halaman Registrasi Pasien';
                         <th>Nama Pasien</th>
                         <th>Tanggal Lahir</th>
                         <th>NIK</th>
-                        <th>Dibuat Oleh</th>
                         <th>Dibuat Pada</th>
-                        <th>Diubah Oleh</th>
                         <th>Diubah Pada</th>
                         <th>Aksi</th>
                     </tr>
@@ -84,9 +82,7 @@ $this->title = 'Halaman Registrasi Pasien';
                             <td><?= $registrator->pasien ? Html::encode($registrator->pasien->getTanggalLahirFormatted()) : '-' ?></td>
                             <td><?= $registrator->pasien ? Html::encode($registrator->pasien->nik) : '-' ?></td>
                             
-                            <td><?= Html::encode($registrator->create_by) ?></td>
                             <td><?= Yii::$app->formatter->asDatetime($registrator->create_time_at, 'php:d/m/Y H:i:s') ?></td>
-                            <td><?= Html::encode($registrator->update_by) ?></td>
                             <td><?= Yii::$app->formatter->asDatetime($registrator->update_time_at, 'php:d/m/Y H:i:s') ?></td>
                             <td>
                                 <?php if (!$dataExists): ?>
@@ -98,7 +94,7 @@ $this->title = 'Halaman Registrasi Pasien';
                                         'data-bs-target' => '#ModalInputForm'
                                     ]) ?>
                                 <?= Html::button('<i class="fa-solid fa-pen"></i>', [
-                                    'class' => 'btn btn-warning btn-sm',
+                                    'class' => 'btn btn-warning btn-sm edit-btn',
                                     'title' => 'Edit Registrasi',
                                     'data-id' => $registrator->id_registrasi, 
                                     'data-bs-toggle' => 'modal',
@@ -142,6 +138,13 @@ $this->title = 'Halaman Registrasi Pasien';
         </div>
 
         <?= LinkPager::widget(['pagination' => $pagination]) ?>
+
+        <?php Modal::begin(['id' => 'ModalEditRegistrasi','title' => '<h5>Edit Registrasi Pasien</h5>','size' => Modal::SIZE_LARGE,
+        ]); ?>
+        <div id="editRegistrasiFormContent">
+            <!-- This content will be loaded via AJAX -->
+        </div>
+        <?php Modal::end(); ?>
 
         <!-- Modals -->
         <?php Modal::begin(['id' => 'ModalInputForm', 'title' => '<h5>Input Form Data</h5>', 'size' => Modal::SIZE_LARGE]); ?>
@@ -241,6 +244,15 @@ $(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
     var id = $(this).data('id');
     $('#delete-form').attr('action', 'index.php?r=data-form/delete&id_registrasi=' + id);
 });
+
+$(document).on('click', '[data-bs-target="#ModalEditRegistrasi"]', function() {
+    var id = $(this).data('id');
+    $.get('index.php?r=registrasi/update', { id: id }, function(data) {
+        var container = $('#editRegistrasiFormContent');
+        container.html(data);
+    });
+});
+
 JS;
 $this->registerJs($script);
 ?>

@@ -29,7 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            <div class="form-inline">
+                <?= $form->field($model, 'usernameOrEmail', [
+                    'template' => '{label} {input} {error}',
+                    'labelOptions' => ['class' => 'mr-2'], // kasih jarak label ke input
+                ])->textInput()->label('Username / Email') ?>
+            </div>
+
+
+
 
             <?= $form->field($model, 'password')->passwordInput() ?>
 

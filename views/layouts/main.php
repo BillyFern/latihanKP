@@ -51,7 +51,16 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'items' => [
             ['label' => 'Registrasi', 'url' => ['registrasi/index']],
             ['label' => 'Data Form', 'url' => ['/pasien/index']],
-            ['label' => 'Login', 'url' => ['/site/login']], // logingit 
+            Yii::$app->user->isGuest
+            ? ['label' => 'Login', 'url' => ['/site/login']]
+            : '<li class="nav-item">'
+            . Html::beginForm(['/site/logout'])
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'nav-link btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>'
         ],
         'activateParents' => true, // aktifkan highlight
     ]);

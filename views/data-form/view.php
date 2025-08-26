@@ -3,8 +3,10 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\Pasien $model */
+/** @var app\models\Registrasi $model_registrasi */
+/** @var app\models\DataForm $model_form */
 
-$this->title = "Detail Pasien: " . $model_registrasi->nama_pasien;
+$this->title = "Detail Pasien: " . $model_registrasi->pasien->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Pasien', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -27,8 +29,8 @@ $this->registerCssFile('@web/css/print.css', [
                 <h5><strong>POLIKLINIK KEBIDANAN</strong></h5>
             </div>
             <div class="col-4">
-                <p>Nama Lengkap : <strong><?= Html::encode($model_registrasi->nama_pasien) ?> </strong></p>
-                <p>Tanggal Lahir : <strong><?= Yii::$app->formatter->asDate($model_registrasi->tanggal_lahir, 'dd MMMM yyyy') ?></strong></p>
+                <p>Nama Lengkap : <strong><?= $model_registrasi->pasien ? Html::encode($model_registrasi->pasien->nama) : '(Data Pasien Tidak Ditemukan)' ?> </strong></p>
+                <p>Tanggal Lahir : <strong><?= $model_registrasi->pasien ? Html::encode($model_registrasi->pasien->getTanggalLahirFormatted()) : '-' ?></strong></p>
                 <p>No. RM : <strong><?= Html::encode($model_registrasi->no_rekam_medis) ?></strong></p>
             </div>
         </div>

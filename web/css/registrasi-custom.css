@@ -1,0 +1,178 @@
+/* Reset dan base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    width: 100%;
+}
+
+
+/* Logo Section */
+.logo-section {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    flex-shrink: 0;
+}
+.logo-section .logo-icon {
+    width: 35px;
+    height: 35px;
+    background: #FFD700;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #1E3A5F;
+}
+
+/* Navigation Tabs */
+.nav-tabs-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+.nav-tab {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 0;
+    cursor: pointer;
+    position: relative;
+}
+.nav-tab:hover {
+    color: #FFD700;
+}
+.nav-tab.active {
+    font-weight: 600;
+    color: #fff;
+}
+.nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #FFD700;
+    border-radius: 2px;
+}
+
+/* Main Content */
+.main-content {
+    background: white;
+    margin: 2rem auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 1200px;
+}
+
+/* Actions Bar */
+.actions-bar {
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-container {
+    flex: 1;
+    max-width: 350px;
+}
+.search-container .form-control {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+.btn-add-patient {
+    background: #1E3A5F !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 10px 18px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-add-patient:hover {
+    background: #16324b !important;
+}
+
+/* Table */
+.table-container {
+    padding: 1.5rem;
+}
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #fff;
+}
+.table-custom thead {
+    background: #f1f3f5;
+}
+.table-custom thead th {
+    padding: 12px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+    text-align: left;
+}
+.table-custom tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+.table-custom tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+/* Pagination */
+.pagination-container {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+}
+.pagination .page-link {
+    border: 1px solid #dee2e6;
+    color: #1E3A5F;
+    background: #fff;
+    padding: 6px 12px;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+.pagination .page-link:hover {
+    background: #1E3A5F;
+    color: white;
+}
+.pagination .page-item.active .page-link {
+    background: #1E3A5F;
+    color: white;
+    border-color: #1E3A5F;
+}

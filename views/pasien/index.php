@@ -7,7 +7,7 @@ use yii\widgets\LinkPager;
 /** @var yii\web\View $this */
 /** @var app\models\PasienSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-/** @var app\models\Pasien $model */ // Ini untuk modal 'create'
+/** @var app\models\Pasien $model */ // Untuk modal create
 
 $this->title = 'List Data Pasien';
 $this->params['breadcrumbs'][] = $this->title;
@@ -32,17 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <button class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i></button>
         </div>
 
-        <?php // Modal untuk membuat pasien baru (tetap sama) ?>
+        <?php // Modal untuk create ?>
         <?php Modal::begin([
             'id' => 'modal-create-pasien',
             'title' => '<h5>Tambah Pasien Baru</h5>',
             'size' => Modal::SIZE_LARGE,
         ]); ?>
-        
-        <?= $this->render('_form', [
-            'model' => $model, 
-        ]) ?>
-
+            <?= $this->render('_form', ['model' => $model]) ?>
         <?php Modal::end(); ?>
 
         <!-- Tabel pasien -->
@@ -66,7 +62,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= Html::encode($pasien->nama) ?></td>
                             <td><?= Html::encode($pasien->getTanggalLahirFormatted()) ?></td>
                             <td><?= Html::encode($pasien->nik) ?></td>
-
                             <td><?= Yii::$app->formatter->asDate($pasien->create_time_at, 'php:d/m/Y') ?></td>
                             <td><?= Yii::$app->formatter->asDate($pasien->update_time_at, 'php:d/m/Y') ?></td>
                             <td class="text-center">
@@ -74,39 +69,69 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'class' => 'btn btn-info btn-sm',
                                     'title' => 'Detail'
                                 ]) ?>
-                                <?php // --- PERUBAHAN UNTUK MODAL EDIT --- ?>
-                                <?php // 1. Tombol 'Ubah' diubah menjadi button untuk trigger modal ?>
+
+                                <!-- Tombol Edit (pakai modal) -->
                                 <?= Html::button('<i class="fa-solid fa-pen"></i>', [
                                     'class' => 'btn btn-warning btn-sm',
                                     'title' => 'Ubah',
                                     'data-bs-toggle' => 'modal',
-                                    // 2. Target modal dibuat unik untuk setiap pasien
                                     'data-bs-target' => '#modal-update-pasien-' . $pasien->id_pasien,
                                 ]) ?>
-                                <?= Html::a('<i class="fa fa-trash"></i>', ['delete', 'id_pasien' => $pasien->id_pasien], [
 
-                                    'class' => 'btn btn-danger btn-sm',
-                                    'title' => 'Hapus',
-                                    'data' => [
-                                        'confirm' => 'Apakah Anda yakin ingin menghapus data pasien ini?',
-                                        'method' => 'post',
-                                    ],
-                                ]) ?>
-                                
-                                <?php // 3. Modal untuk update ditambahkan di dalam loop ?>
+                                <!-- Tombol Delete (pakai modal konfirmasi) -->
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                    data-bs-toggle="modal" data-bs-target="#modal-delete-pasien-<?= $pasien->id_pasien ?>">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                                <?php // Modal Edit ?>
                                 <?php Modal::begin([
-                                    // ID modal ini harus sama dengan 'data-bs-target' di tombol
                                     'id' => 'modal-update-pasien-' . $pasien->id_pasien,
                                     'title' => '<h5>Ubah Data Pasien: ' . Html::encode($pasien->nama) . '</h5>',
                                     'size' => Modal::SIZE_LARGE,
                                 ]); ?>
-                                
-                                <?php // 4. Render _form dengan model pasien yang sesuai dari baris ini ?>
-                                <?= $this->render('_form', [
-                                    'model' => $pasien, 
-                                ]) ?>
-
+                                    <?= $this->render('_form', ['model' => $pasien]) ?>
                                 <?php Modal::end(); ?>
+
+                                <?php // Modal Konfirmasi Delete ?>
+                                <div class="modal fade" id="modal-delete-pasien-<?= $pasien->id_pasien ?>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content text-center p-4" style="border-radius: 12px;">
+                                            <div class="modal-body">
+
+                                                <!-- Lingkaran tanda seru -->
+                                                <div style="
+                                                    width: 90px; height: 90px; margin: 0 auto 20px auto;
+                                                    border-radius: 50%; border: 5px solid #f1c40f;
+                                                    display: flex; align-items: center; justify-content: center;
+                                                    font-size: 40px; color: #f1c40f; font-weight: bold;">
+                                                    !
+                                                </div>
+
+                                                <h4 class="mb-3">Penghapusan Data</h4>
+                                                <p>Apakah Anda yakin ingin menghapus data pasien <b><?= Html::encode($pasien->nama) ?></b>?</p>
+
+                                                <div class="d-flex justify-content-center gap-2 mt-3">
+                                                    <!-- Tombol YA HAPUS -->
+                                                    <?= Html::a('Ya, Hapus', ['delete', 'id_pasien' => $pasien->id_pasien], [
+                                                        'class' => 'btn',
+                                                        'style' => 'background-color:#e74c3c;color:white;padding:8px 20px;font-weight:bold;',
+                                                        'data-method' => 'post',
+                                                        'data-confirm' => false,
+                                                    ]) ?>
+
+                                                    <!-- Tombol BATAL -->
+                                                    <button type="button" class="btn btn-secondary"
+                                                        style="background-color:#7f8c8d;color:white;padding:8px 20px;font-weight:bold;"
+                                                        data-bs-dismiss="modal">
+                                                        Batal
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </td>
                         </tr>

@@ -34,10 +34,12 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 <header id="header">
     <?php
+     // bagian untuk menampilkan navbar setelah login
+     if (!(Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id === 'login')) {
     NavBar::begin([
         'brandLabel' => Html::img('@web/img/logo3.png', [
             'alt'=>Yii::$app->name,
-            'style'=>'height:40px;', // Logo kiri atas
+            'style'=>'height:40px;',
         ]),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
@@ -45,14 +47,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         ],
     ]);
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ms-3'],
-        'items' => [
-            ['label' => 'Registrasi', 'url' => ['registrasi/index']],
-            ['label' => 'Pasien', 'url' => ['/pasien/index']],   // dari HEAD
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
+    // Tampilkan navbar hanya jika user sudah login
+    if (!Yii::$app->user->isGuest) {
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav ms-3'],
+            'items' => [
+                ['label' => 'Registrasi', 'url' => ['registrasi/index']],
+                ['label' => 'Pasien', 'url' => ['/pasien/index']],
+                '<li class="nav-item">'
                     . Html::beginForm(['/site/logout'])
                     . Html::submitButton(
                         'Logout (' . Yii::$app->user->identity->username . ')',
@@ -60,11 +62,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     )
                     . Html::endForm()
                     . '</li>'
-        ],
-        'activateParents' => true, // aktifkan highlight
-    ]);
+            ],
+            'activateParents' => true,
+        ]);
+    }
 
     NavBar::end();
+}
     ?>
 </header>
 

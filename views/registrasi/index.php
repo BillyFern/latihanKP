@@ -93,13 +93,13 @@ $this->title = 'Halaman Registrasi Pasien';
                             <td><?= Yii::$app->formatter->asDatetime($registrator->update_time_at, 'php:d/m/Y H:i:s') ?></td>
                             <td>
                                 <?php if (!$dataExists): ?>
-                                    <?= Html::button('<i class="fa-solid fa-plus"></i>', [
+                                <?= Html::a('<i class="fa-solid fa-plus"></i>', 
+                                    ['data-form/create', 'id_registrasi' => $registrator->id_registrasi], 
+                                    [
                                         'class' => 'btn btn-success btn-sm',
                                         'title' => 'Input Data Form',
-                                        'data-id' => $registrator->id_registrasi, 
-                                        'data-bs-toggle' => 'modal',
-                                        'data-bs-target' => '#ModalInputForm'
-                                    ]) ?>
+                                    ]
+                                ) ?>
                                 <?= Html::button('<i class="fa-solid fa-pen"></i>', [
                                     'class' => 'btn btn-warning btn-sm edit-btn',
                                     'title' => 'Edit Registrasi',
@@ -122,13 +122,13 @@ $this->title = 'Halaman Registrasi Pasien';
                                             'title' => 'View Data Form',
                                         ]) 
                                     ?>
-                                    <?= Html::button('<i class="fa-solid fa-pen"></i>', [
-                                        'class' => 'btn btn-warning btn-sm',
-                                        'title' => 'Edit Data Form',
-                                        'data-id' => $registrator->id_registrasi, 
-                                        'data-bs-toggle' => 'modal',
-                                        'data-bs-target' => '#ModalEditForm'
-                                    ]) ?>
+                                    <?= Html::a('<i class="fa-solid fa-pen"></i>', 
+                                        ['data-form/update', 'id_registrasi' => $registrator->id_registrasi], 
+                                        [
+                                            'class' => 'btn btn-warning btn-sm',
+                                            'title' => 'Edit Data Form',
+                                        ]
+                                    ) ?>
                                     <?= Html::button('<i class="fa-solid fa-trash"></i>', [
                                         'class' => 'btn btn-danger btn-sm delete-btn',
                                         'title' => 'Hapus Data Form',
@@ -172,11 +172,6 @@ $this->title = 'Halaman Registrasi Pasien';
             <?= $this->render('_form_data', ['dataform' => $dataform]) ?>
         </div>
         <?php Modal::end(); ?>
-
-        <?php Modal::begin(['id' => 'ModalEditForm', 'title' => '<h5>Edit Form Data</h5>', 'size' => Modal::SIZE_LARGE]); ?>
-        <div id="editDataContent"></div>
-        <?php Modal::end(); ?>
-
 
         <?php Modal::begin([
             'id' => 'ModalDelete', 
@@ -324,14 +319,6 @@ $('#ModalEditRegistrasi, #ModalInputRegistrasi, #ModalInputForm').on('hidden.bs.
 });
 
 // --- existing handlers for loading DataForm edit and delete (unchanged)
-$(document).on('click', '[data-bs-target="#ModalEditForm"]', function() {
-    var id = $(this).data('id');
-    $.get('index.php?r=data-form/edit', { id_registrasi: id }, function(data) {
-        var container = $('#editDataContent');
-        container.html(data);
-        initModalForm(container);
-    });
-});
 
 $(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
     var id = $(this).data('id');

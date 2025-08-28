@@ -23,9 +23,13 @@ class DataFormController extends Controller{
         ];
     }
 
-    public function actionCreate()
+    public function actionCreate($id_registrasi=null)
     {
         $model = new DataForm();
+
+        if ($id_registrasi != null){
+            $model->id_registrasi = $id_registrasi;
+        }
 
         if ($model->load(Yii::$app->request->post())) {
             // dataFields will be filled automatically from POST
@@ -36,7 +40,7 @@ class DataFormController extends Controller{
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'dataform' => $model,
         ]);
     }
 
@@ -49,19 +53,6 @@ class DataFormController extends Controller{
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionEdit($id_registrasi)
-    {
-        $model = $this->findModelByRegistrasi($id_registrasi);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Data updated successfully');
-            return $this->redirect(['registrasi/index']);
-        }
-
-        return $this->renderAjax('@app/views/registrasi/_form_data', [
-            'dataform' => $model,
-        ]);
-    }
 
     public function actionUpdate($id_registrasi)
     {
@@ -72,7 +63,7 @@ class DataFormController extends Controller{
             return $this->redirect(['registrasi/index']);
         }
 
-        return $this->renderAjax('@app/views/registrasi/_form_data.php', [
+        return $this->render('update', [
             'dataform' => $model,
         ]);
     }

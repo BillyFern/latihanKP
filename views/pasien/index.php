@@ -7,7 +7,7 @@ use yii\widgets\LinkPager;
 /** @var yii\web\View $this */
 /** @var app\models\PasienSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-/** @var app\models\Pasien $model */ // Ini untuk modal 'create'
+/** @var app\models\Pasien $model */ // Untuk modal create
 
 $this->title = 'List Data Pasien';
 $this->params['breadcrumbs'][] = $this->title;
@@ -52,6 +52,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
             ]) ?>
         </div>
 
+
         <!-- Modal Tambah Pasien -->
         <?php Modal::begin([
             'id' => 'modal-create-pasien',
@@ -60,11 +61,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
             'options' => ['class' => 'fade'],
             'headerOptions' => ['class' => 'modal-header-custom'],
         ]); ?>
-        
-        <?= $this->render('_form', [
-            'model' => $model, 
-        ]) ?>
-
+            <?= $this->render('_form', ['model' => $model]) ?>
         <?php Modal::end(); ?>
 
         <!-- Table Container -->

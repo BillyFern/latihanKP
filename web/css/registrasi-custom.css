@@ -8,7 +8,9 @@ body {
     background-color: #f4f6f9;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
+.modal-open .select2-container--open {
+    z-index: 99999;
+}
 .header-container {
     display: flex;
     align-items: center;
@@ -175,4 +177,14 @@ body {
     background: #1E3A5F;
     color: white;
     border-color: #1E3A5F;
+}
+#deleteModal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+#deleteModal .btn-danger {
+    min-width: 120px;
+}
+#deleteModal .btn-secondary {
+    min-width: 120px;
 }

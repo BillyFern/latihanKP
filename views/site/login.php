@@ -6,10 +6,16 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-
+$this->registerCss("
+ html, body {
+        height: 100vh;
+        margin: 0;
+        overflow: hidden; /* supaya tidak bisa scroll */
+    }
+");
 ?>
 
-<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+<div class="d-flex align-items-center justify-content-center vh-100">
     <div class="card shadow-lg border-primary rounded-3 p-4" style="width: 380px;">
         
         <!-- Logo -->

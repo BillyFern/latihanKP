@@ -124,13 +124,19 @@ class PasienController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id_pasien)
-    {
+    public function actionDelete()
+{
+    $id_pasien = Yii::$app->request->post('id_pasien');
+
+    if ($id_pasien !== null) {
         $this->findModel($id_pasien)->delete();
         Yii::$app->session->setFlash('success', 'Data pasien telah dihapus.');
-        return $this->redirect(['index']);
+    } else {
+        Yii::$app->session->setFlash('error', 'ID pasien tidak ditemukan.');
     }
 
+    return $this->redirect(['index']);
+}
     /**
      * Finds the Pasien model based on its primary key value.
      * @param int $id_pasien ID Pasien

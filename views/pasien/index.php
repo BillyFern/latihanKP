@@ -16,15 +16,34 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerCssFile('@web/css/registrasi-custom.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 ?>
+<!-- 🔔 Flash Notif Sticky Top -->
+<div class="position-fixed top-0 end-0 mt-5 me-3" style="z-index: 1055; width: 350px;">
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <?= Yii::$app->session->getFlash('success') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <?= Yii::$app->session->getFlash('error') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+</div>
+
 
 <!-- Main Content -->
 <div class="container-fluid">
     <div class="main-content">
-        
+
         <!-- Header Section -->
         <div class="content-header">
-            <h1><?= Html::encode($this->title) ?></h1>
-            <div class="subtitle"><?= $dataProvider->getTotalCount() ?> total pasien</div>
+            <h1 class="p-4"><?= Html::encode($this->title) ?></h1>
+            <div class="subtitle p-4"><?= $dataProvider->getTotalCount() ?> total pasien</div>
         </div>
 
         <!-- Actions Bar -->
@@ -32,15 +51,15 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
             <!-- Search -->
             <div class="search-container">
                 <?= Html::beginForm(['pasien/index'], 'get') ?>
-                    <div class="input-group">
-                        <?= Html::textInput('q', Yii::$app->request->get('q'), [
-                            'class' => 'form-control',
-                            'placeholder' => 'Search pasien...'
-                        ]) ?>
-                        <button class="btn" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
+                <div class="input-group">
+                    <?= Html::textInput('q', Yii::$app->request->get('q'), [
+                        'class' => 'form-control',
+                        'placeholder' => 'Search pasien...'
+                    ]) ?>
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <?= Html::endForm() ?>
             </div>
 
@@ -61,7 +80,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
             'options' => ['class' => 'fade'],
             'headerOptions' => ['class' => 'modal-header-custom'],
         ]); ?>
-            <?= $this->render('_form', ['model' => $model]) ?>
+        <?= $this->render('_form', ['model' => $model]) ?>
         <?php Modal::end(); ?>
 
         <!-- Table Container -->
@@ -94,22 +113,20 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
                                             'class' => 'btn btn-action btn-primary',
                                             'title' => 'Detail'
                                         ]) ?>
-                                        
+
                                         <?= Html::button('<i class="fas fa-edit"></i>', [
                                             'class' => 'btn btn-action btn-warning',
                                             'title' => 'Ubah',
                                             'data-bs-toggle' => 'modal',
                                             'data-bs-target' => '#modal-update-pasien-' . $pasien->id_pasien,
                                         ]) ?>
-                                        
-                                        <?= Html::a('<i class="fas fa-trash"></i>', ['delete', 'id_pasien' => $pasien->id_pasien], [
-                                            'class' => 'btn btn-action btn-danger',
+
+                                        <?= Html::button('<i class="fas fa-trash"></i>', [
+                                            'class' => 'btn btn-action btn-danger btn-delete',
                                             'title' => 'Hapus',
-                                            'data' => [
-                                                'confirm' => 'Apakah Anda yakin ingin menghapus data pasien ini?',
-                                                'method' => 'post',
-                                            ],
+                                            'data-id' => $pasien->id_pasien,
                                         ]) ?>
+
                                     </div>
 
                                     <!-- Modal Update Pasien -->
@@ -119,9 +136,9 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
                                         'size' => Modal::SIZE_LARGE,
                                         'options' => ['class' => 'fade'],
                                     ]); ?>
-                                    
+
                                     <?= $this->render('_form', [
-                                        'model' => $pasien, 
+                                        'model' => $pasien,
                                     ]) ?>
 
                                     <?php Modal::end(); ?>
@@ -132,6 +149,28 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
                 </table>
             </div>
         </div>
+        <!-- Modal Konfirmasi Hapus -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content text-center p-4">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <i class="fas fa-exclamation-circle fa-4x text-warning"></i>
+                        </div>
+                        <h5 id="deleteModalLabel" class="mb-2 fw-bold">Penghapusan Data</h5>
+                        <p>Apakah Anda yakin ingin menghapus data ini?</p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <?= Html::beginForm(['pasien/delete'], 'post', ['id' => 'form-delete']) ?>
+                        <input type="hidden" name="id_pasien" id="delete-id">
+                        <button type="submit" class="btn btn-danger">Ya, hapus</button>
+                        <?= Html::endForm() ?>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Pagination -->
         <div class="pagination-container">
@@ -147,4 +186,20 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
         </div>
 
     </div>
+    
+    <?php
+    $js = <<<JS
+$('.btn-delete').on('click', function(){
+    let id = $(this).data('id');
+    $('#delete-id').val(id); // kirim ke hidden input
+    $('#deleteModal').modal('show');
+});
+
+// Auto close alert setelah 3 detik
+setTimeout(function() {
+    $('.alert').alert('close');
+}, 3000);
+JS;
+    $this->registerJs($js);
+    ?>
 </div>

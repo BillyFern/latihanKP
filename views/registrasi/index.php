@@ -42,7 +42,7 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
     <div class="main-content">
         <!-- Header Section -->
         <div class="content-header">
-            <h1 class="p-4">List Data Pasien</h1>
+            <h1 class="p-4">List Data Registrasi</h1>
             <div class="subtitle p-4"><?= count($registrasi) ?> available doctors</div>
         </div>
 
@@ -50,18 +50,18 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
         <div class="actions-bar">
             <div class="search-container">
                 <?= Html::beginForm(['registrasi/index'], 'get') ?>
-                    <div class="input-group">
-                        <?= Html::textInput('q', Yii::$app->request->get('q'), [
-                            'class' => 'form-control',
-                            'placeholder' => 'Search'
-                        ]) ?>
-                        <button class="btn" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
+                <div class="input-group">
+                    <?= Html::textInput('q', Yii::$app->request->get('q'), [
+                        'class' => 'form-control',
+                        'placeholder' => 'Search'
+                    ]) ?>
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <?= Html::endForm() ?>
             </div>
-            
+
             <?= Html::button('<i class="fas fa-plus me-2"></i>Tambah Data Pasien', [
                 'class' => 'btn btn-add-patient',
                 'data-bs-toggle' => 'modal',
@@ -74,40 +74,40 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
             <div class="table-responsive">
                 <table class="table table-custom">
                     <thead>
-                       <tr>
-                          <th class="fw-bold">ID Registrasi</th>
-                          <th class="fw-bold">Nomor Registrasi</th>
-                          <th class="fw-bold">Nomor Rekam Medis</th>
-                          <th class="fw-bold">Nama Pasien</th>
-                          <th class="fw-bold">Tanggal Lahir</th>
-                          <th class="fw-bold">NIK</th>
-                          <th class="fw-bold text-center">Aksi</th>
-                      </tr>
+                        <tr>
+                            <th class="fw-bold">ID Registrasi</th>
+                            <th class="fw-bold">Nomor Registrasi</th>
+                            <th class="fw-bold">Nomor Rekam Medis</th>
+                            <th class="fw-bold">Nama Pasien</th>
+                            <th class="fw-bold">Tanggal Lahir</th>
+                            <th class="fw-bold">NIK</th>
+                            <th class="fw-bold text-center">Aksi</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($registrasi as $index => $registrator): ?>
-                            <?php 
-                                $dataExists = in_array($registrator->id_registrasi, $existingDataIds);
+                            <?php
+                            $dataExists = in_array($registrator->id_registrasi, $existingDataIds);
                             ?>
                             <tr>
                                 <td>
                                     <strong><?= Html::encode($registrator->id_registrasi) ?></strong>
                                 </td>
                                 <td>
-                                    <span >
+                                    <span>
                                         <?= Html::encode($registrator->no_registrasi) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span >
+                                    <span>
                                         <?= Html::encode($registrator->no_rekam_medis) ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <div >
+                                    <div>
                                         <span class="status-indicator <?= $dataExists ? 'status-active' : 'status-pending' ?>"></span>
-                                        
-                                            <?= $registrator->pasien ? Html::encode($registrator->pasien->nama) : '(Data Pasien Tidak Ditemukan)' ?>
+
+                                        <?= $registrator->pasien ? Html::encode($registrator->pasien->nama) : '(Data Pasien Tidak Ditemukan)' ?>
                                     </div>
                                 </td>
                                 <td>
@@ -120,51 +120,89 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                      <?php if (!$dataExists): ?>
-                                      <?= Html::a('<i class="fa-solid fa-plus"></i>', 
-                                          ['data-form/create', 'id_registrasi' => $registrator->id_registrasi], 
-                                          [
-                                              'class' => 'btn btn-success btn-sm',
-                                              'title' => 'Input Data Form',
-                                          ]
-                                      ) ?>
-                                      <?= Html::button('<i class="fa-solid fa-pen"></i>', [
-                                          'class' => 'btn btn-warning btn-sm edit-btn',
-                                          'title' => 'Edit Registrasi',
-                                          'data-id' => $registrator->id_registrasi, 
-                                          'data-bs-toggle' => 'modal',
-                                          'data-bs-target' => '#ModalEditRegistrasi'
-                                      ]) ?>
-                                      <?= Html::button('<i class="fa-solid fa-trash"></i>', [
-                                          'class' => 'btn btn-danger btn-sm delete-btn-registrasi',
-                                          'title' => 'Delete Registrasi',
-                                          'data-id' => $registrator->id_registrasi, 
-                                          'data-bs-toggle' => 'modal',
-                                          'data-bs-target' => '#ModalDeleteRegistrasi'
-                                      ]) ?>
-                                      <?php else: ?>
-                                          <?= Html::a('<i class="fa-solid fa-eye"></i>', 
-                                              ['data-form/view', 'id_registrasi' => $registrator->id_registrasi], 
-                                              [
-                                                  'class' => 'btn btn-primary btn-sm',
-                                                  'title' => 'View Data Form',
-                                              ]) 
-                                          ?>
-                                          <?= Html::a('<i class="fa-solid fa-pen"></i>', 
-                                              ['data-form/update', 'id_registrasi' => $registrator->id_registrasi], 
-                                              [
-                                                  'class' => 'btn btn-warning btn-sm',
-                                                  'title' => 'Edit Data Form',
-                                              ]
-                                          ) ?>
-                                          <?= Html::button('<i class="fa-solid fa-trash"></i>', [
-                                              'class' => 'btn btn-danger btn-sm delete-btn',
-                                              'title' => 'Hapus Data Form',
-                                              'data-id' => $registrator->id_registrasi, 
-                                              'data-bs-toggle' => 'modal',
-                                              'data-bs-target' => '#ModalDelete'
-                                          ]) ?>
-                                      <?php endif; ?>
+                                        <?php if (!$dataExists): ?>
+                                            <?= Html::a(
+                                                '<i class="fa-solid fa-plus"></i>',
+                                                ['data-form/create', 'id_registrasi' => $registrator->id_registrasi],
+                                                [
+                                                    'class' => 'btn btn-success btn-sm',
+                                                    'title' => 'Input Data Form',
+                                                ]
+                                            ) ?>
+                                            <?= Html::button('<i class="fa-solid fa-pen"></i>', [
+                                                'class' => 'btn btn-warning btn-sm edit-btn',
+                                                'title' => 'Edit Registrasi',
+                                                'data-id' => $registrator->id_registrasi,
+                                                'data-bs-toggle' => 'modal',
+                                                'data-bs-target' => '#ModalEditRegistrasi'
+                                            ]) ?>
+                                            <?= Html::button('<i class="fa-solid fa-trash"></i>', [
+                                                'class' => 'btn btn-danger btn-sm delete-btn-registrasi',
+                                                'title' => 'Delete Registrasi',
+                                                'data-id' => $registrator->id_registrasi,
+                                                'data-bs-toggle' => 'modal',
+                                                'data-bs-target' => '#ModalDeleteFormRegistrasi'
+                                            ]) ?>
+                                        <?php else: ?>
+                                            <?= Html::a(
+                                                '<i class="fa-solid fa-eye"></i>',
+                                                ['data-form/view', 'id_registrasi' => $registrator->id_registrasi],
+                                                [
+                                                    'class' => 'btn btn-primary btn-sm',
+                                                    'title' => 'View Data Form',
+                                                ]
+                                            )
+                                            ?>
+                                            <?= Html::a(
+                                                '<i class="fa-solid fa-pen"></i>',
+                                                ['data-form/update', 'id_registrasi' => $registrator->id_registrasi],
+                                                [
+                                                    'class' => 'btn btn-warning btn-sm',
+                                                    'title' => 'Edit Data Form',
+                                                ]
+                                            ) ?>
+                                            <?= Html::button('<i class="fa-solid fa-trash"></i>', [
+                                                'class' => 'btn btn-danger btn-sm delete-btn',
+                                                'title' => 'Hapus Data Form',
+                                                'data-id' => $registrator->id_registrasi,
+                                                'data-bs-toggle' => 'modal',
+                                                'data-bs-target' => '#ModalDeleteForm'
+                                            ]) ?>
+                                        <?php endif; ?>
+                                        <?php Modal::begin([
+                                            'id' => 'ModalDeleteFormRegistrasi',
+                                            'options' => ['class' => 'fade'],
+                                            'dialogOptions' => ['class' => 'modal-dialog-centered'],
+                                            'closeButton' => false, // biar lebih clean
+                                        ]); ?>
+                                        <div class="text-center p-4">
+                                            <!-- Ikon Warning -->
+                                            <div class="d-flex justify-content-center align-items-center mb-3">
+                                                <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
+                                                    style="width: 80px; height: 80px; border: 4px solid #dc3545;">
+                                                    <i class="fas fa-exclamation-triangle text-danger" style="font-size: 2.5rem;"></i>
+                                                </div>
+                                            </div>
+
+                                            <!-- Judul & Pesan -->
+                                            <h5 class="fw-bold mb-2">Hapus Registrasi</h5>
+                                            <p class="text-muted">Apakah Anda yakin ingin menghapus data registrasi ini?</p>
+
+                                            <!-- Tombol Aksi -->
+                                            <form id="delete-form-registrasi" method="post" action="">
+                                                <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+                                                <div class="d-flex justify-content-center gap-2 mt-3">
+                                                    <button type="submit" class="btn btn-danger px-4">
+                                                        Ya, Hapus
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                                        Batal
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <?php Modal::end(); ?>
+
                                     </div>
                                 </td>
                             </tr>
@@ -189,7 +227,7 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
     </div>
 </div>
 <?php
-    $js = <<<JS
+$js = <<<JS
 $('.btn-delete').on('click', function(){
     let id = $(this).data('id');
     $('#delete-id').val(id); // kirim ke hidden input
@@ -201,8 +239,8 @@ setTimeout(function() {
     $('.alert').alert('close');
 }, 3000);
 JS;
-    $this->registerJs($js);
-    ?>
+$this->registerJs($js);
+?>
 <!-- Modals Section -->
 <?php Modal::begin([
     'id' => 'ModalInputRegistrasi',
@@ -230,7 +268,7 @@ JS;
 <?php Modal::end(); ?>
 
 <?php Modal::begin([
-    'id' => 'ModalDelete', 
+    'id' => 'ModalDeleteForm',
     'options' => ['class' => 'fade'],
     'dialogOptions' => ['class' => 'modal-dialog-centered'],
     'closeButton' => false, // 🔑 agar modal di tengah
@@ -238,8 +276,8 @@ JS;
 <div class="text-center p-4">
     <!-- Ikon Warning -->
     <div class="d-flex justify-content-center align-items-center mb-3">
-        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center" 
-             style="width: 80px; height: 80px; border: 4px solid #FFD700;">
+        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center"
+            style="width: 80px; height: 80px; border: 4px solid #FFD700;">
             <i class="fas fa-exclamation text-warning" style="font-size: 2.5rem;"></i>
         </div>
     </div>
@@ -279,6 +317,11 @@ function showLoading() {
         document.body.appendChild(overlay);
     }
 }
+// handle hapus registrasi
+$(document).on('click', '[data-bs-target="#ModalDeleteFormRegistrasi"]', function() {
+    var id = $(this).data('id');
+    $('#delete-form-registrasi').attr('action', 'index.php?r=registrasi/delete&id=' + id);
+});
 
 function hideLoading() {
     const overlay = document.querySelector('.loading-overlay');
@@ -366,10 +409,11 @@ $('#ModalEditRegistrasi, #ModalInputRegistrasi, #ModalInputForm').on('hidden.bs.
 
 // --- existing handlers for loading DataForm edit and delete (unchanged)
 
-$(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
+$(document).on('click', '[data-bs-target="#ModalDeleteForm"]', function() {
     var id = $(this).data('id');
     $('#delete-form').attr('action', 'index.php?r=data-form/delete&id_registrasi=' + id);
 });
+
 
 // $(document).on('click', '[data-bs-target="#ModalEditRegistrasi"]', function() {
 //     var id = $(this).data('id');

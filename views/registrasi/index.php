@@ -22,14 +22,28 @@ $this->params['breadcrumbs'][] = $this->title;
 // Register CSS
 $this->registerCssFile('@web/css/registrasi-custom.css');
 ?>
+<div class="position-fixed top-0 end-0 mt-5 me-3" style="z-index: 1055; width: 350px;">
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <?= Yii::$app->session->getFlash('success') ?>
+        </div>
+    <?php endif; ?>
 
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
+</div>
 <!-- Main Content -->
 <div class="container-fluid">
     <div class="main-content">
         <!-- Header Section -->
         <div class="content-header">
-            <h1>List Data Pasien</h1>
-            <div class="subtitle"><?= count($registrasi) ?> available doctors</div>
+            <h1 class="p-4">List Data Pasien</h1>
+            <div class="subtitle p-4"><?= count($registrasi) ?> available doctors</div>
         </div>
 
         <!-- Actions Bar -->
@@ -174,7 +188,21 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
         </div>
     </div>
 </div>
+<?php
+    $js = <<<JS
+$('.btn-delete').on('click', function(){
+    let id = $(this).data('id');
+    $('#delete-id').val(id); // kirim ke hidden input
+    $('#deleteModal').modal('show');
+});
 
+// Auto close alert setelah 3 detik
+setTimeout(function() {
+    $('.alert').alert('close');
+}, 3000);
+JS;
+    $this->registerJs($js);
+    ?>
 <!-- Modals Section -->
 <?php Modal::begin([
     'id' => 'ModalInputRegistrasi',
@@ -203,27 +231,39 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
 
 <?php Modal::begin([
     'id' => 'ModalDelete', 
-    'title' => '<i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus',
     'options' => ['class' => 'fade'],
+    'dialogOptions' => ['class' => 'modal-dialog-centered'],
+    'closeButton' => false, // 🔑 agar modal di tengah
 ]); ?>
-<div class="text-center p-3">
-    <i class="fas fa-exclamation-circle text-warning" style="font-size: 3rem;"></i>
-    <h5 class="mt-3">Apakah Anda yakin ingin menghapus data ini?</h5>
-    <p class="text-muted">Tindakan ini tidak dapat dibatalkan</p>
-</div>
-
-<form id="delete-form" method="post" action="">
-    <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
-    <div class="text-end">
-        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
-            <i class="fas fa-times me-1"></i>Batal
-        </button>
-        <button type="submit" class="btn btn-danger">
-            <i class="fas fa-trash me-1"></i>Hapus
-        </button>
+<div class="text-center p-4">
+    <!-- Ikon Warning -->
+    <div class="d-flex justify-content-center align-items-center mb-3">
+        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center" 
+             style="width: 80px; height: 80px; border: 4px solid #FFD700;">
+            <i class="fas fa-exclamation text-warning" style="font-size: 2.5rem;"></i>
+        </div>
     </div>
-</form>
+
+    <!-- Judul & Pesan -->
+    <h5 class="fw-bold mb-2">Penghapusan Data</h5>
+    <p class="text-muted">Apakah Anda yakin ingin menghapus data ini?</p>
+
+    <!-- Tombol Aksi -->
+    <form id="delete-form" method="post" action="">
+        <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+        <div class="d-flex justify-content-center gap-2 mt-3">
+            <button type="submit" class="btn btn-danger px-4">
+                Ya, hapus
+            </button>
+            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                Batal
+            </button>
+        </div>
+    </form>
+</div>
 <?php Modal::end(); ?>
+
+
 
 <?php
 // Register FontAwesome

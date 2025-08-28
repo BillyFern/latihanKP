@@ -19,18 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- Card utama -->
     <div class="card shadow-sm border border-primary">
-        <div class="card-header d-flex justify-content-between align-items-center bg-white">
+        <div class="card-header bg-white">
             <h5 class="mb-0">Informasi Dasar Pasien</h5>
-
-            <!-- Tombol Update & Delete -->
-            <div>
-                <?= Html::a('Update', ['update', 'id_pasien' => $model->id_pasien], ['class' => 'btn btn-sm btn-warning me-2']) ?>
-                
-                <button type="button" class="btn btn-sm btn-danger" 
-                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                    Delete
-                </button>
-            </div>
         </div>
 
         <div class="card-body">
@@ -52,26 +42,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="row mb-3">
                 <div class="col-md-4 fw-bold">Nama</div>
-                <div class="col-md-8 d-flex align-items-center">
-                    <?= Html::encode($model->nama) ?>
-                    <?= Html::a('Edit', ['update', 'id_pasien' => $model->id_pasien], ['class' => 'btn btn-sm btn-light ms-2']) ?>
-                </div>
+                <div class="col-md-8"><?= Html::encode($model->nama) ?></div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-4 fw-bold">Tanggal Lahir</div>
-                <div class="col-md-8 d-flex align-items-center">
-                    <?= Yii::$app->formatter->asDate($model->tanggal_lahir, 'php:d/m/Y') ?>
-                    <?= Html::a('Edit', ['update', 'id_pasien' => $model->id_pasien], ['class' => 'btn btn-sm btn-light ms-2']) ?>
-                </div>
+                <div class="col-md-8"><?= Yii::$app->formatter->asDate($model->tanggal_lahir, 'php:d/m/Y') ?></div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-4 fw-bold">NIK</div>
-                <div class="col-md-8 d-flex align-items-center">
-                    <?= Html::encode($model->nik) ?>
-                    <?= Html::a('Edit', ['update', 'id_pasien' => $model->id_pasien], ['class' => 'btn btn-sm btn-light ms-2']) ?>
-                </div>
+                <div class="col-md-8"><?= Html::encode($model->nik) ?></div>
             </div>
 
             <div class="row mb-3">
@@ -87,6 +68,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row mb-3">
                 <div class="col-md-4 fw-bold">Terakhir update</div>
                 <div class="col-md-8"><?= Yii::$app->formatter->asDatetime($model->update_time_at, 'php:d/m/Y H:i:s') ?></div>
+            </div>
+
+            <!-- Tombol Update & Delete di bawah -->
+            <div class="d-flex justify-content-end">
+                <?= Html::a('Update', ['update', 'id_pasien' => $model->id_pasien], ['class' => 'btn btn-warning me-2']) ?>
+
+                <button type="button" class="btn btn-danger" 
+                    data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    Delete
+                </button>
             </div>
 
         </div>

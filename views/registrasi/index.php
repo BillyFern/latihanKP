@@ -11,6 +11,12 @@ use yii\widgets\LinkPager;
 /** @var app\models\DataForm $dataform */
 /** @var array $existingDataIds */
 
+
+$this->registerCssFile(
+    'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css',
+    ['depends' => [\kartik\select2\Select2Asset::class]]
+);
+
 $this->title = 'Registrasi Pasien';
 $this->params['breadcrumbs'][] = $this->title;
 // Register CSS
@@ -241,56 +247,6 @@ function hideLoading() {
     }
 }
 
-function initModalForm(container) {
-    // IMT calculation
-    function updateIMT() {
-        var berat = parseFloat($(container).find('input[name="DataForm[dataFields][berat_badan]"]').val());
-        var tinggiCm = parseFloat($(container).find('input[name="DataForm[dataFields][tinggi_badan]"]').val());
-        var imtInput = $(container).find('input[name="DataForm[dataFields][imt]"]');
-
-        if (!isNaN(berat) && !isNaN(tinggiCm) && tinggiCm > 0) {
-            var tinggiM = tinggiCm / 100;
-            var imt = berat / (tinggiM * tinggiM);
-            imtInput.val(imt.toFixed(2));
-        } else {
-            imtInput.val('');
-        }
-    }
-
-    $(container).on('input', 'input[name="DataForm[dataFields][berat_badan]"], input[name="DataForm[dataFields][tinggi_badan]"]', updateIMT);
-    updateIMT();
-
-    // Risiko Jatuh calculation
-    function updateRiskRow(sel) {
-        var tr = $(sel).closest('tr'); 
-        var out = tr.find('.resiko-hasil'); 
-        if (out.length) {
-            var val = $(sel).val() || "0";
-            var num = parseInt(val, 10); 
-            out.val(num);
-        }
-    }
-
-    function updateRiskTotal() {
-        var sum = 0;
-        $(container).find('.resiko-select').each(function() {
-            sum += parseInt($(this).val() || '0', 10);
-        });
-        $(container).find('#resiko-total').val(sum);
-        $(container).find('#resiko-total-hidden').val(sum);
-    }
-
-    $(container).find('.resiko-select').each(function(){
-        var sel = this;
-        $(sel).off('change').on('change', function(){
-            updateRiskRow(sel);
-            updateRiskTotal();
-        });
-        updateRiskRow(sel);
-    });
-    updateRiskTotal();
-}
-
 // --- helper: initialize Select2 only for .select2-init inside a container
 function initSelect2In(container, modalSelector) {
     var \$c = $(container);
@@ -375,19 +331,19 @@ $(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
     $('#delete-form').attr('action', 'index.php?r=data-form/delete&id_registrasi=' + id);
 });
 
-$(document).on('click', '[data-bs-target="#ModalEditRegistrasi"]', function() {
-    var id = $(this).data('id');
-    showLoading();
+// $(document).on('click', '[data-bs-target="#ModalEditRegistrasi"]', function() {
+//     var id = $(this).data('id');
+//     showLoading();
     
-    $.get('index.php?r=registrasi/update', { id: id }, function(data) {
-        var container = $('#editRegistrasiFormContent');
-        container.html(data);
-        hideLoading();
-    }).fail(function() {
-        hideLoading();
-        alert('Terjadi kesalahan saat memuat data');
-    });
-});
+//     $.get('index.php?r=registrasi/update', { id: id }, function(data) {
+//         var container = $('#editRegistrasiFormContent');
+//         container.html(data);
+//         hideLoading();
+//     }).fail(function() {
+//         hideLoading();
+//         alert('Terjadi kesalahan saat memuat data');
+//     });
+// });
 
 // Enhanced table animations
 $('.table-custom tbody tr').hover(

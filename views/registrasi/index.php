@@ -55,15 +55,14 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
                 <table class="table table-custom">
                     <thead>
                        <tr>
-    <th class="fw-bold">ID Registrasi</th>
-    <th class="fw-bold">Nomor Registrasi</th>
-    <th class="fw-bold">Nomor Rekam Medis</th>
-    <th class="fw-bold">Nama Pasien</th>
-    <th class="fw-bold">Tanggal Lahir</th>
-    <th class="fw-bold">NIK</th>
-    <th class="fw-bold text-center">Aksi</th>
-</tr>
-
+                          <th class="fw-bold">ID Registrasi</th>
+                          <th class="fw-bold">Nomor Registrasi</th>
+                          <th class="fw-bold">Nomor Rekam Medis</th>
+                          <th class="fw-bold">Nama Pasien</th>
+                          <th class="fw-bold">Tanggal Lahir</th>
+                          <th class="fw-bold">NIK</th>
+                          <th class="fw-bold text-center">Aksi</th>
+                      </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($registrasi as $index => $registrator): ?>
@@ -101,51 +100,51 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <?php if (!$dataExists): ?>
-                                            <?= Html::button('<i class="fas fa-plus"></i>', [
-                                                'class' => 'btn btn-action btn-success',
-                                                'title' => 'Input Data Form',
-                                                'data-id' => $registrator->id_registrasi, 
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#ModalInputForm'
-                                            ]) ?>
-                                            <?= Html::button('<i class="fas fa-edit"></i>', [
-                                                'class' => 'btn btn-action btn-warning edit-btn',
-                                                'title' => 'Edit Registrasi',
-                                                'data-id' => $registrator->id_registrasi, 
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#ModalEditRegistrasi'
-                                            ]) ?>
-                                            <?= Html::button('<i class="fas fa-trash"></i>', [
-                                                'class' => 'btn btn-action btn-danger delete-btn',
-                                                'title' => 'Delete Registrasi',
-                                                'data-id' => $registrator->id_registrasi, 
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#ModalDeleteRegistrasi'
-                                            ]) ?>
-                                        <?php else: ?>
-                                            <?= Html::a('<i class="fas fa-eye"></i>', 
-                                                ['data-form/view', 'id_registrasi' => $registrator->id_registrasi], 
-                                                [
-                                                    'class' => 'btn btn-action btn-primary',
-                                                    'title' => 'Detail',
-                                                ]) 
-                                            ?>
-                                            <?= Html::button('<i class="fas fa-edit"></i>', [
-                                                'class' => 'btn btn-action btn-warning',
-                                                'title' => 'Edit Data Form',
-                                                'data-id' => $registrator->id_registrasi, 
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#ModalEditForm'
-                                            ]) ?>
-                                            <?= Html::button('<i class="fas fa-trash"></i>', [
-                                                'class' => 'btn btn-action btn-danger delete-btn',
-                                                'title' => 'Hapus Data Form',
-                                                'data-id' => $registrator->id_registrasi, 
-                                                'data-bs-toggle' => 'modal',
-                                                'data-bs-target' => '#ModalDelete'
-                                            ]) ?>
-                                        <?php endif; ?>
+                                      <?php if (!$dataExists): ?>
+                                      <?= Html::a('<i class="fa-solid fa-plus"></i>', 
+                                          ['data-form/create', 'id_registrasi' => $registrator->id_registrasi], 
+                                          [
+                                              'class' => 'btn btn-success btn-sm',
+                                              'title' => 'Input Data Form',
+                                          ]
+                                      ) ?>
+                                      <?= Html::button('<i class="fa-solid fa-pen"></i>', [
+                                          'class' => 'btn btn-warning btn-sm edit-btn',
+                                          'title' => 'Edit Registrasi',
+                                          'data-id' => $registrator->id_registrasi, 
+                                          'data-bs-toggle' => 'modal',
+                                          'data-bs-target' => '#ModalEditRegistrasi'
+                                      ]) ?>
+                                      <?= Html::button('<i class="fa-solid fa-trash"></i>', [
+                                          'class' => 'btn btn-danger btn-sm delete-btn-registrasi',
+                                          'title' => 'Delete Registrasi',
+                                          'data-id' => $registrator->id_registrasi, 
+                                          'data-bs-toggle' => 'modal',
+                                          'data-bs-target' => '#ModalDeleteRegistrasi'
+                                      ]) ?>
+                                      <?php else: ?>
+                                          <?= Html::a('<i class="fa-solid fa-eye"></i>', 
+                                              ['data-form/view', 'id_registrasi' => $registrator->id_registrasi], 
+                                              [
+                                                  'class' => 'btn btn-primary btn-sm',
+                                                  'title' => 'View Data Form',
+                                              ]) 
+                                          ?>
+                                          <?= Html::a('<i class="fa-solid fa-pen"></i>', 
+                                              ['data-form/update', 'id_registrasi' => $registrator->id_registrasi], 
+                                              [
+                                                  'class' => 'btn btn-warning btn-sm',
+                                                  'title' => 'Edit Data Form',
+                                              ]
+                                          ) ?>
+                                          <?= Html::button('<i class="fa-solid fa-trash"></i>', [
+                                              'class' => 'btn btn-danger btn-sm delete-btn',
+                                              'title' => 'Hapus Data Form',
+                                              'data-id' => $registrator->id_registrasi, 
+                                              'data-bs-toggle' => 'modal',
+                                              'data-bs-target' => '#ModalDelete'
+                                          ]) ?>
+                                      <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -194,26 +193,6 @@ $this->registerCssFile('@web/css/registrasi-custom.css');
 <div id="editRegistrasiFormContent">
     <!-- This content will be loaded via AJAX -->
 </div>
-<?php Modal::end(); ?>
-
-<?php Modal::begin([
-    'id' => 'ModalInputForm', 
-    'title' => '<i class="fas fa-file-medical me-2"></i>Input Form Data', 
-    'size' => Modal::SIZE_LARGE,
-    'options' => ['class' => 'fade'],
-]); ?>
-<div id="formDataContent">
-    <?= $this->render('_form_data', ['dataform' => $dataform]) ?>
-</div>
-<?php Modal::end(); ?>
-
-<?php Modal::begin([
-    'id' => 'ModalEditForm', 
-    'title' => '<i class="fas fa-file-medical-alt me-2"></i>Edit Form Data', 
-    'size' => Modal::SIZE_LARGE,
-    'options' => ['class' => 'fade'],
-]); ?>
-<div id="editDataContent"></div>
 <?php Modal::end(); ?>
 
 <?php Modal::begin([
@@ -312,21 +291,84 @@ function initModalForm(container) {
     updateRiskTotal();
 }
 
-// Enhanced AJAX handlers with loading
-$(document).on('click', '[data-bs-target="#ModalEditForm"]', function() {
-    var id = $(this).data('id');
-    showLoading();
-    
-    $.get('index.php?r=data-form/edit', { id_registrasi: id }, function(data) {
-        var container = $('#editDataContent');
+// --- helper: initialize Select2 only for .select2-init inside a container
+function initSelect2In(container, modalSelector) {
+    var \$c = $(container);
+    \$c.find('select.select2-init').each(function(){
+        var \$s = $(this);
+        // destroy prior instance only on this element
+        if (\$s.data('select2')) {
+            try { \$s.select2('destroy'); } catch(e) {}
+        }
+        var opts = {
+            width: '100%',
+            allowClear: true,
+            placeholder: \$s.data('placeholder') || \$s.attr('placeholder') || 'Select...',
+            theme: 'bootstrap-5'
+        };
+        if (modalSelector) {
+            opts.dropdownParent = $(modalSelector);
+        }
+        try {
+            \$s.select2(opts);
+        } catch(e) {
+            console.error('Select2 init error:', e, \$s);
+        }
+    });
+}
+
+// --- EDIT modal: load form via AJAX on show, then init Select2 + any form logic
+$('#ModalEditRegistrasi').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    var container = $('#editRegistrasiFormContent');
+
+    container.html('<p>Loading...</p>');
+
+    $.get('index.php?r=registrasi/update', { id: id })
+    .done(function(data) {
+        // remove any select2 inside this container first (precaution)
+        container.find('select.select2-init').each(function(){
+            if ($(this).data('select2')) {
+                try { $(this).select2('destroy'); } catch(e) {}
+            }
+        });
+
         container.html(data);
-        initModalForm(container);
-        hideLoading();
-    }).fail(function() {
-        hideLoading();
-        alert('Terjadi kesalahan saat memuat data');
+
+        // initialize select2 inside the edit modal
+        initSelect2In(container, '#ModalEditRegistrasi');
+
+        // initialize other JS-driven features in the loaded form
+        if (typeof initModalForm === 'function') {
+            try { initModalForm(container); } catch(e) { console.warn(e); }
+        }
+    })
+    .fail(function(xhr) {
+        container.html('<div class="text-danger">Failed to load form (HTTP ' + xhr.status + ')</div>');
+        console.error(xhr.responseText || xhr.statusText);
     });
 });
+
+// --- CREATE modal: create form is server-rendered into #registrasiFormContent
+// initialize select2 for create form on page load, and re-init when modal opens
+$(function() {
+    initSelect2In($('#registrasiFormContent'), '#ModalInputRegistrasi');
+});
+$('#ModalInputRegistrasi').on('shown.bs.modal', function() {
+    initSelect2In($('#registrasiFormContent'), '#ModalInputRegistrasi');
+});
+
+// --- when edit/create modals hide, destroy select2 instances inside them to avoid duplicates
+$('#ModalEditRegistrasi, #ModalInputRegistrasi, #ModalInputForm').on('hidden.bs.modal', function() {
+    $(this).find('select.select2-init').each(function(){
+        if ($(this).data('select2')) {
+            try { $(this).select2('destroy'); } catch(e) {}
+        }
+    });
+});
+
+// --- existing handlers for loading DataForm edit and delete (unchanged)
 
 $(document).on('click', '[data-bs-target="#ModalDelete"]', function() {
     var id = $(this).data('id');

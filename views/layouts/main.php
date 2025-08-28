@@ -106,7 +106,7 @@ $this->registerCss("
 <main id="main" class="flex-shrink-0" role="main">
     <div class="container">
         <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+            <!--Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) -->
         <?php endif ?>
 
         <?= $content ?>

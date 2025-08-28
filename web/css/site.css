@@ -93,3 +93,48 @@ a.desc:after {
         display: none !important;
     }
 }
+
+/* Page header wrapper */
+.page-header {
+    display: flex;
+    justify-content: space-between; /* title left, breadcrumb right */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Title style */
+.page-header h1 {
+    font-size: 29px;       /* matches your screenshot */
+    font-weight: 600;      /* semi-bold */
+    margin: 0;
+    color: #222;           /* darker than breadcrumb */
+}
+
+/* Breadcrumb styling */
+.breadcrumb-custom {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 14px;
+    color: #777;           /* lighter gray */
+}
+
+.breadcrumb-custom li {
+    display: inline;
+}
+
+.breadcrumb-custom li+li:before {
+    content: "›";          /* arrow separator */
+    padding: 0 8px;
+    color: #aaa;
+}
+
+/* Make breadcrumb links look & behave like plain text */
+.breadcrumb-custom a,
+.breadcrumb a,
+.page-header .breadcrumb a {
+  color: #000000 !important;           /* inherit surrounding text color */
+  text-decoration: none !important;    /* remove underline */
+}
+
+

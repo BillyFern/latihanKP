@@ -47,14 +47,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         ],
     ]);
 
-    // Tampilkan navbar hanya jika user sudah login
-    if (!Yii::$app->user->isGuest) {
-        echo Nav::widget([
-            'options' => ['class' => 'navbar-nav ms-3'],
-            'items' => [
-                ['label' => 'Registrasi', 'url' => ['registrasi/index']],
-                ['label' => 'Pasien', 'url' => ['/pasien/index']],
-                '<li class="nav-item">'
+    echo Nav::widget([
+        'options' => ['class' => 'navbar-nav ms-3'],
+        'items' => [
+            ['label' => 'pasien', 'url' => ['/pasien/index']],
+            ['label' => 'registrasi', 'url' => ['registrasi/index']],
+               // dari HEAD
+            Yii::$app->user->isGuest
+                ? ['label' => 'Login', 'url' => ['/site/login']]
+                : '<li class="nav-item">'
                     . Html::beginForm(['/site/logout'])
                     . Html::submitButton(
                         'Logout (' . Yii::$app->user->identity->username . ')',

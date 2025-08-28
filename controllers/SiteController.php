@@ -1,14 +1,13 @@
 <?php
-
 namespace app\controllers;
 
+use app\models\ContactForm;
+use app\models\LoginForm;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -20,17 +19,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only'  => ['logout'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'allow'   => true,
+                        'roles'   => ['@'],
                     ],
                 ],
             ],
-            'verbs' => [
-                'class' => VerbFilter::class,
+            'verbs'  => [
+                'class'   => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -44,11 +43,11 @@ class SiteController extends Controller
     public function actions()
     {
         return [
-            'error' => [
+            'error'   => [
                 'class' => 'yii\web\ErrorAction',
             ],
             'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
+                'class'           => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
@@ -71,13 +70,15 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['registrasi/index']);
+        if (! Yii::$app->user->isGuest) {
+            // Kalau sudah login, arahkan ke dashboard
+            return $this->redirect(['site/dashboard']);
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-           return $this->redirect(['registrasi/index']);
+            // Kalau login sukses, arahkan ke dashboard
+            return $this->redirect(['site/dashboard']);
         }
 
         $model->password = '';
@@ -93,9 +94,8 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
+        Yii::$app->user->logout();              // logout user
+        return $this->redirect(['site/login']); // langsung diarahkan ke halaman login
     }
 
     /**
@@ -130,4 +130,20 @@ class SiteController extends Controller
     {
         return $this->render('hello', ['message' => $message]);
     }
+
+    /**
+     * Displays about page.
+     *
+     * @return string
+     */
+
+    public function actionDashboard()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['site/login']);
+        }
+
+        return $this->render('dashboard'); // tampilan welcome page
+    }
+
 }

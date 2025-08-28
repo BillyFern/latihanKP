@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
@@ -9,22 +8,19 @@ use yii\jui\DatePicker;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="pasien-form">
+<div class="pasien-form p-4 bg-white rounded shadow-sm" style="max-width: 700px; margin: auto;">
 
     <?php $form = ActiveForm::begin([
-        // --- PERBAIKAN KUNCI DI SINI ---
-        // 'action' diatur secara dinamis.
-        // Jika model adalah record baru, action-nya ke 'pasien/create'.
-        // Jika bukan, action-nya ke 'pasien/update' dengan menyertakan id_pasien.
         'action' => $model->isNewRecord ? ['pasien/create'] : ['pasien/update', 'id_pasien' => $model->id_pasien],
         'method' => 'post',
     ]); ?>
 
-    <?php // Logika untuk menampilkan No Rekam Medis hanya saat update ?>
+    <h5 class="mb-4 fw-bold">Informasi Dasar Pasien</h5>
+
     <?php if (!$model->isNewRecord): ?>
         <?= $form->field($model, 'no_rekam_medis')->textInput([
             'readonly' => true,
-            'class' => 'form-control bg-light'
+            'class' => 'form-control bg-light',
         ]) ?>
     <?php else: ?>
         <div class="alert alert-info">
@@ -34,15 +30,15 @@ use yii\jui\DatePicker;
 
     <?= $form->field($model, 'nama')->textInput([
         'maxlength' => true, 
-        'placeholder' => 'Masukkan nama lengkap pasien'
+        'placeholder' => 'Nama Lengkap',
     ]) ?>
 
     <?= $form->field($model, 'tanggal_lahir')->widget(DatePicker::class, [
         'dateFormat' => 'yyyy-MM-dd',
         'options' => [
             'class' => 'form-control',
-            'placeholder' => 'Pilih tanggal lahir',
-            'autocomplete' => 'off'
+            'placeholder' => 'DD/MM/YYYY',
+            'autocomplete' => 'off',
         ],
         'clientOptions' => [
             'changeYear' => true,
@@ -54,16 +50,47 @@ use yii\jui\DatePicker;
 
     <?= $form->field($model, 'nik')->textInput([
         'maxlength' => 16,
-        'placeholder' => 'Masukkan NIK 16 digit',
-        'type' => 'number'
+        'placeholder' => 'Nomor Induk Kependudukan',
+        'type' => 'number',
     ]) ?>
 
-    <div class="form-group mt-3">
-        <?= Html::submitButton($model->isNewRecord ? 'Simpan Pasien Baru' : 'Simpan Perubahan', [
-            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'
+    <div class="form-group text-end mt-4">
+        <?= Html::submitButton($model->isNewRecord ? 'Simpan' : 'Simpan Perubahan', [
+            'class' => 'btn btn-warning px-4 py-2'
         ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+// CSS untuk tampilan modern tanpa center
+$this->registerCss("
+    .pasien-form .form-control {
+        border-radius: 6px;
+        padding: 10px;
+        box-shadow: none;
+        border: 1px solid #ced4da;
+        text-align: left; /* Rata kiri */
+    }
+    .pasien-form .form-control:focus {
+        border-color: #f0ad4e;
+        box-shadow: 0 0 0 0.2rem rgba(240, 173, 78, 0.25);
+    }
+    .pasien-form .alert-info {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        text-align: left; /* Rata kiri */
+    }
+    .pasien-form .field-pasien-nama label,
+    .pasien-form .field-pasien-tanggal_lahir label,
+    .pasien-form .field-pasien-nik label,
+    .pasien-form .field-pasien-no_rekam_medis label {
+        text-align: left; /* Label rata kiri */
+        display: block;
+        width: 100%;
+        font-weight: 500;
+    }
+");
+?>
